@@ -1,0 +1,50 @@
+{
+  "project": {
+    "name": "",
+    "addr": "CVS Pharmacy, 5495",
+    "eng": "",
+    "lic": "",
+    "firm": ""
+  },
+  "noaa": [
+    0.329,
+    0.472,
+    0.57,
+    0.791,
+    1.12,
+    1.49,
+    1.77,
+    2.36
+  ],
+  "subareas": [
+    {
+      "id": "sc-1",
+      "name": "Subarea A",
+      "type": "subcatchment",
+      "area": 0.45,
+      "slope": 2,
+      "lu_idx": 4,
+      "imp": 40,
+      "soil": "B",
+      "L_ov": 70,
+      "sl_ov": 2,
+      "L_tt": 350,
+      "sl_tt": 1.5,
+      "tt_method": "manning",
+      "stn_from": "100",
+      "stn_to": "101",
+      "C": 0.51,
+      "Ti": 7.4,
+      "Tt": 1.22,
+      "Tc": 8.6,
+      "I": 3.04431,
+      "Qp": 0.7,
+      "usNode": null,
+      "drainTo": "nd-2",
+      "lu_key": "MDR-7.3",
+      "Lm": 65,
+      "V": 4.8,
+      "ttSrc": "manual entry"
+    }
+  ]
+}

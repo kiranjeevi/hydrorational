@@ -1,0 +1,2166 @@
+%PDF-1.3
+%ºß¬à
+3 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 612. 792.]
+/Contents 4 0 R
+>>
+endobj
+4 0 obj
+<<
+/Length 7936
+>>
+stream
+0.200025 w
+0 G
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.102 0.435 0.659 rg
+42. 746. Td
+(RATIONAL METHOD HYDROLOGY STUDY) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+42. 730. Td
+(2026 County of San Diego Hydrology Manual, Sections 3 and 6) Tj
+ET
+0.18 0.53 0.76 RG
+1.3999999999999999 w
+42. 722. m
+570. 722. l
+S
+0.18 0.53 0.76 rg
+42. 704. 528. -20. re
+f
+BT
+/F2 10 Tf
+11.5 TL
+1. g
+49. 690. Td
+(PROJECT) Tj
+ET
+BT
+/F2 9 Tf
+10.3499999999999996 TL
+0. g
+42. 674. Td
+(Project) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+152. 674. Td
+(La Jolla Drainage Study) Tj
+ET
+BT
+/F2 9 Tf
+10.3499999999999996 TL
+0. g
+42. 660. Td
+(Location) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+152. 660. Td
+(La Jolla, California, USA) Tj
+ET
+BT
+/F2 9 Tf
+10.3499999999999996 TL
+0. g
+42. 646. Td
+(Engineer) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+152. 646. Td
+(Kiran Pallachulla, PE) Tj
+ET
+BT
+/F2 9 Tf
+10.3499999999999996 TL
+0. g
+42. 632. Td
+(Firm) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+152. 632. Td
+(Snipes-Dye Associates) Tj
+ET
+BT
+/F2 9 Tf
+10.3499999999999996 TL
+0. g
+42. 618. Td
+(Date) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+152. 618. Td
+(2026-09-15) Tj
+ET
+BT
+/F2 9 Tf
+10.3499999999999996 TL
+0. g
+42. 604. Td
+(Jurisdiction) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+152. 604. Td
+(SD County 2026     Storm frequency: 100-year) Tj
+ET
+BT
+/F2 9 Tf
+10.3499999999999996 TL
+0. g
+42. 590. Td
+(Site coordinates) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+152. 590. Td
+(32.81230, -117.26770) Tj
+ET
+0.18 0.53 0.76 rg
+42. 570. 528. -20. re
+f
+BT
+/F2 10 Tf
+11.5 TL
+1. g
+49. 556. Td
+(NOAA ATLAS 14 DEPTHS \(INCHES\)) Tj
+ET
+BT
+/F2 9 Tf
+10.3499999999999996 TL
+0. g
+42. 540. Td
+(5-min) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+42. 528. Td
+(0.329) Tj
+ET
+BT
+/F2 9 Tf
+10.3499999999999996 TL
+0. g
+174. 540. Td
+(10-min) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+174. 528. Td
+(0.472) Tj
+ET
+BT
+/F2 9 Tf
+10.3499999999999996 TL
+0. g
+306. 540. Td
+(15-min) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+306. 528. Td
+(0.570) Tj
+ET
+BT
+/F2 9 Tf
+10.3499999999999996 TL
+0. g
+438. 540. Td
+(30-min) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+438. 528. Td
+(0.791) Tj
+ET
+BT
+/F2 9 Tf
+10.3499999999999996 TL
+0. g
+42. 514. Td
+(60-min) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+42. 502. Td
+(1.120) Tj
+ET
+BT
+/F2 9 Tf
+10.3499999999999996 TL
+0. g
+174. 514. Td
+(2-hr) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+174. 502. Td
+(1.490) Tj
+ET
+BT
+/F2 9 Tf
+10.3499999999999996 TL
+0. g
+306. 514. Td
+(3-hr) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+306. 502. Td
+(1.770) Tj
+ET
+BT
+/F2 9 Tf
+10.3499999999999996 TL
+0. g
+438. 514. Td
+(6-hr) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0. g
+438. 502. Td
+(2.360) Tj
+ET
+0.18 0.53 0.76 rg
+42. 482. 528. -20. re
+f
+BT
+/F2 10 Tf
+11.5 TL
+1. g
+49. 468. Td
+(SUBAREA SUMMARY) Tj
+ET
+BT
+/F2 8.5 Tf
+9.7749999999999986 TL
+0. g
+42. 452. Td
+(Subarea) Tj
+ET
+BT
+/F2 8.5 Tf
+9.7749999999999986 TL
+0. g
+147. 452. Td
+(Area \(ac\)) Tj
+ET
+BT
+/F2 8.5 Tf
+9.7749999999999986 TL
+0. g
+207. 452. Td
+(C) Tj
+ET
+BT
+/F2 8.5 Tf
+9.7749999999999986 TL
+0. g
+247. 452. Td
+(Ti) Tj
+ET
+BT
+/F2 8.5 Tf
+9.7749999999999986 TL
+0. g
+287. 452. Td
+(Tt) Tj
+ET
+BT
+/F2 8.5 Tf
+9.7749999999999986 TL
+0. g
+327. 452. Td
+(Tc) Tj
+ET
+BT
+/F2 8.5 Tf
+9.7749999999999986 TL
+0. g
+372. 452. Td
+(I \(in/hr\)) Tj
+ET
+BT
+/F2 8.5 Tf
+9.7749999999999986 TL
+0. g
+437. 452. Td
+(Qp \(cfs\)) Tj
+ET
+0.6 w
+0.59 G
+42. 448. m
+570. 448. l
+S
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+42. 437. Td
+(Subarea A) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+147. 437. Td
+(0.44) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+207. 437. Td
+(0.510) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+247. 437. Td
+(7.40) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+287. 437. Td
+(1.22) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+327. 437. Td
+(8.60) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+372. 437. Td
+(3.044) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+437. 437. Td
+(0.68) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+42. 424. Td
+(Subarea B) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+147. 424. Td
+(0.08) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+207. 424. Td
+(0.510) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+247. 424. Td
+(7.40) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+287. 424. Td
+(1.22) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+327. 424. Td
+(8.60) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+372. 424. Td
+(3.044) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+437. 424. Td
+(0.12) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+42. 411. Td
+(Subarea C) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+147. 411. Td
+(0.45) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+207. 411. Td
+(0.510) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+247. 411. Td
+(7.40) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+287. 411. Td
+(1.22) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+327. 411. Td
+(8.60) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+372. 411. Td
+(3.044) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+437. 411. Td
+(0.70) Tj
+ET
+0.59 G
+42. 402. m
+570. 402. l
+S
+BT
+/F2 8.5 Tf
+9.7749999999999986 TL
+0. g
+42. 394. Td
+(TOTAL) Tj
+ET
+BT
+/F2 8.5 Tf
+9.7749999999999986 TL
+0. g
+147. 394. Td
+(0.97) Tj
+ET
+BT
+/F2 8.5 Tf
+9.7749999999999986 TL
+0. g
+437. 394. Td
+(1.50) Tj
+ET
+0.18 0.53 0.76 rg
+42. 372. 528. -20. re
+f
+BT
+/F2 10 Tf
+11.5 TL
+1. g
+49. 358. Td
+(FLOW PATH SUMMARY) Tj
+ET
+BT
+/F2 8.5 Tf
+9.7749999999999986 TL
+0. g
+42. 342. Td
+(Flow path) Tj
+ET
+BT
+/F2 8.5 Tf
+9.7749999999999986 TL
+0. g
+147. 342. Td
+(Type) Tj
+ET
+BT
+/F2 8.5 Tf
+9.7749999999999986 TL
+0. g
+247. 342. Td
+(L \(ft\)) Tj
+ET
+BT
+/F2 8.5 Tf
+9.7749999999999986 TL
+0. g
+297. 342. Td
+(S \(%\)) Tj
+ET
+BT
+/F2 8.5 Tf
+9.7749999999999986 TL
+0. g
+347. 342. Td
+(n) Tj
+ET
+BT
+/F2 8.5 Tf
+9.7749999999999986 TL
+0. g
+387. 342. Td
+(V \(fps\)) Tj
+ET
+BT
+/F2 8.5 Tf
+9.7749999999999986 TL
+0. g
+442. 342. Td
+(Tt \(min\)) Tj
+ET
+0.59 G
+42. 338. m
+570. 338. l
+S
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+42. 327. Td
+(Flow path 1) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+147. 327. Td
+(Street gutter) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+247. 327. Td
+(284) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+297. 327. Td
+(1.979) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+347. 327. Td
+(0.0130) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+387. 327. Td
+(5.51) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+442. 327. Td
+(0.86) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+42. 314. Td
+(Flow path 2) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+147. 314. Td
+(Swale / ditch) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+247. 314. Td
+(197) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+297. 314. Td
+(0.604) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+347. 314. Td
+(0.0300) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+387. 314. Td
+(1.73) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+442. 314. Td
+(1.90) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+42. 301. Td
+(Flow path 4) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+147. 301. Td
+(Street gutter) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+247. 301. Td
+(295) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+297. 301. Td
+(2.010) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+347. 301. Td
+(0.0130) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+387. 301. Td
+(5.56) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+442. 301. Td
+(0.88) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+42. 288. Td
+(Flow path 4) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+147. 288. Td
+(Street gutter) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+247. 288. Td
+(115) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+297. 288. Td
+(3.183) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+347. 288. Td
+(0.0130) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+387. 288. Td
+(6.99) Tj
+ET
+BT
+/F1 8.5 Tf
+9.7749999999999986 TL
+0. g
+442. 288. Td
+(0.27) Tj
+ET
+BT
+/F1 7.5 Tf
+8.625 TL
+0.471 g
+42. 22. Td
+(La Jolla Drainage Study   |   2026-09-15) Tj
+ET
+BT
+/F1 7.5 Tf
+8.625 TL
+0.471 g
+518. 22. Td
+(Page 1 of 3) Tj
+ET
+endstream
+endobj
+5 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 612. 792.]
+/Contents 6 0 R
+>>
+endobj
+6 0 obj
+<<
+/Length 10471
+>>
+stream
+0.6 w
+0.59 G
+0.18 0.53 0.76 rg
+42. 750. 528. -20. re
+f
+BT
+/F2 10 Tf
+11.5 TL
+1. g
+49. 736. Td
+(NODE AND STATION LISTING) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 720. Td
+(              SAN DIEGO COUNTY RATIONAL HYDROLOGY) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 711.6000000000000227 Td
+(      2026 County of San Diego Hydrology Manual, Sections 3 and 6) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 703.2000000000000455 Td
+(           HydroRational  Rational Hydrology Study) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 694.7999999999999545 Td
+(---------------------------------------------------------------------------) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 686.3999999999999773 Td
+( PROJECT       : La Jolla Drainage Study) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 678. Td
+( LOCATION      : La Jolla, California, USA) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 669.5999999999999091 Td
+( ENGINEER      : Kiran Pallachulla, PE) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 661.1999999999999318 Td
+( FIRM          : Snipes-Dye Associates) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 652.7999999999999545 Td
+( DATE          : 2026-09-15) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 644.3999999999999773 Td
+( JURISDICTION  : SD County 2026        STORM FREQUENCY: 100 YEAR) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 636. Td
+( SITE COORDS   : 32.81230, -117.26770) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 627.5999999999999091 Td
+(---------------------------------------------------------------------------) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 610.7999999999999545 Td
+( ********* HYDROLOGY STUDY CONTROL INFORMATION *********) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 602.3999999999998636 Td
+( ENGLISH \(IN-LB\) UNITS USED) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 593.9999999999998863 Td
+( RATIONAL METHOD PER SECTION 3, Q = C I A) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 585.5999999999999091 Td
+( INTENSITY BY LOG-LOG INTERPOLATION OF NOAA ATLAS 14 DEPTHS, SECTION 3.1.3) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 577.1999999999999318 Td
+( INITIAL TIME OF CONCENTRATION PER TABLE 3-2 \(FAA OVERLAND FLOW\)) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 568.7999999999999545 Td
+( RUNOFF COEFFICIENT, TABLE 3-1 AND SECTION 3.1.2:) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 560.3999999999998636 Td
+(   C = 0.90 x \(% IMPERVIOUS\) + Cp x \(1 - % IMPERVIOUS\)) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 551.9999999999998863 Td
+(   0.90 IS THE RUNOFF COEFFICIENT OF IMPERVIOUS SURFACE) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 543.5999999999999091 Td
+(   Cp IS THE PERVIOUS COEFFICIENT BY SOIL GROUP:) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 535.1999999999998181 Td
+(   A = 0.20, B = 0.25, C = 0.30, D = 0.35) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 518.3999999999998636 Td
+( ********* NOAA ATLAS 14 POINT PRECIPITATION DEPTHS \(INCHES\) *********) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 509.9999999999999432 Td
+( 5-MIN = 0.329     10-MIN = 0.472    15-MIN = 0.570    30-MIN = 0.791    ) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 501.5999999999999659 Td
+( 60-MIN = 1.120    2-HR = 1.490      3-HR = 1.770      6-HR = 2.360      ) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 484.8000000000000114 Td
+(+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 476.4000000000000341 Td
+(FLOW PROCESS FROM NODE     1.00 TO NODE     2.00 IS CODE = 21) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 468.0000000000000568 Td
+(---------------------------------------------------------------------------) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 459.6000000000000796 Td
+(>>>>>RATIONAL METHOD INITIAL SUBAREA ANALYSIS<<<<<) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 451.2000000000001023 Td
+(---------------------------------------------------------------------------) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 442.8000000000001251 Td
+( *USER SPECIFIED\(SUBAREA\):) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 434.4000000000001478 Td
+( SUBAREA IDENTIFICATION                 = Subarea A) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 426.0000000000001705 Td
+( LAND USE \(TABLE 3-1\)                   = MDR-7.3   SOIL GROUP = B) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 417.6000000000001933 Td
+( PERCENT IMPERVIOUS                     =       40.0) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 409.200000000000216 Td
+( IMPERVIOUS AREA FRACTION               = .4000) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 400.8000000000002387 Td
+( USER-SPECIFIED RUNOFF COEFFICIENT      = .5100) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 392.4000000000002615 Td
+( INITIAL SUBAREA FLOW-LENGTH\(FEET\)      =      70.00) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 384.0000000000002842 Td
+( DOWNSTREAM ELEVATION\(FEET\)             =      84.84) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 375.600000000000307 Td
+( SUBAREA OVERLAND FLOW SLOPE\(PERCENT\)   =       2.00) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 367.2000000000003297 Td
+( SUBAREA OVERLAND TIME OF FLOW\(MIN.\)    =      7.400) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 358.8000000000003524 Td
+( 100 YEAR RAINFALL INTENSITY\(INCH/HOUR\) =      3.044) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 350.4000000000003752 Td
+( SUBAREA AREA\(ACRES\)                    =       0.44) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 342.0000000000003979 Td
+( SUBAREA RUNOFF\(CFS\)                    =       0.68) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 333.6000000000004206 Td
+( TOTAL AREA\(ACRES\) =     0.44  TOTAL RUNOFF\(CFS\) =     0.68) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 325.2000000000004434 Td
+(---------------------------------------------------------------------------) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 316.8000000000004661 Td
+( SUBAREA TIME OF CONCENTRATION TC\(MIN.\) =      8.600   \(manual entry\)) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 308.4000000000004889 Td
+( 100 YEAR RAINFALL INTENSITY\(INCH/HOUR\) =      3.044) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 300.0000000000005116 Td
+( PEAK FLOW RATE\(CFS\) AT THIS POINT      =       0.68) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 283.2000000000005571 Td
+(+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 274.800000000000523 Td
+(FLOW PROCESS FROM NODE     2.00 TO NODE     3.00 IS CODE = 21) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 266.4000000000005457 Td
+(---------------------------------------------------------------------------) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 258.0000000000005684 Td
+(>>>>>RATIONAL METHOD INITIAL SUBAREA ANALYSIS<<<<<) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 249.6000000000005912 Td
+(---------------------------------------------------------------------------) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 241.2000000000006139 Td
+( *USER SPECIFIED\(SUBAREA\):) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 232.8000000000006366 Td
+( SUBAREA IDENTIFICATION                 = Subarea B) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 224.4000000000006594 Td
+( LAND USE \(TABLE 3-1\)                   = MDR-7.3   SOIL GROUP = B) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 216.0000000000006821 Td
+( PERCENT IMPERVIOUS                     =       40.0) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 207.6000000000007049 Td
+( IMPERVIOUS AREA FRACTION               = .4000) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 199.2000000000007276 Td
+( USER-SPECIFIED RUNOFF COEFFICIENT      = .5100) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 190.8000000000007503 Td
+( INITIAL SUBAREA FLOW-LENGTH\(FEET\)      =      70.00) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 182.4000000000007731 Td
+( DOWNSTREAM ELEVATION\(FEET\)             =      84.84) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 174.0000000000007958 Td
+( SUBAREA OVERLAND FLOW SLOPE\(PERCENT\)   =       2.00) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 165.6000000000008185 Td
+( SUBAREA OVERLAND TIME OF FLOW\(MIN.\)    =      7.400) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 157.2000000000008413 Td
+( 100 YEAR RAINFALL INTENSITY\(INCH/HOUR\) =      3.044) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 148.800000000000864 Td
+( SUBAREA AREA\(ACRES\)                    =       0.08) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 140.4000000000008868 Td
+( SUBAREA RUNOFF\(CFS\)                    =       0.12) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 132.0000000000009095 Td
+( TOTAL AREA\(ACRES\) =     0.08  TOTAL RUNOFF\(CFS\) =     0.12) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 123.6000000000009322 Td
+(---------------------------------------------------------------------------) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 115.200000000000955 Td
+( SUBAREA TIME OF CONCENTRATION TC\(MIN.\) =      8.600   \(manual entry\)) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 106.8000000000009777 Td
+( 100 YEAR RAINFALL INTENSITY\(INCH/HOUR\) =      3.044) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 98.4000000000010004 Td
+( PEAK FLOW RATE\(CFS\) AT THIS POINT      =       0.12) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 81.6000000000010459 Td
+(+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 73.2000000000010687 Td
+(FLOW PROCESS FROM NODE     3.00 TO NODE     4.00 IS CODE = 21) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 64.8000000000010914 Td
+(---------------------------------------------------------------------------) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 56.4000000000011141 Td
+(>>>>>RATIONAL METHOD INITIAL SUBAREA ANALYSIS<<<<<) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 48.0000000000011369 Td
+(---------------------------------------------------------------------------) Tj
+ET
+BT
+/F1 7.5 Tf
+8.625 TL
+0.471 g
+42. 22. Td
+(La Jolla Drainage Study   |   2026-09-15) Tj
+ET
+BT
+/F1 7.5 Tf
+8.625 TL
+0.471 g
+518. 22. Td
+(Page 2 of 3) Tj
+ET
+endstream
+endobj
+7 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 612. 792.]
+/Contents 8 0 R
+>>
+endobj
+8 0 obj
+<<
+/Length 10866
+>>
+stream
+0.6 w
+0.59 G
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 750. Td
+( *USER SPECIFIED\(SUBAREA\):) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 741.6000000000000227 Td
+( SUBAREA IDENTIFICATION                 = Subarea C) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 733.2000000000000455 Td
+( LAND USE \(TABLE 3-1\)                   = MDR-7.3   SOIL GROUP = B) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 724.7999999999999545 Td
+( PERCENT IMPERVIOUS                     =       40.0) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 716.3999999999999773 Td
+( IMPERVIOUS AREA FRACTION               = .4000) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 708. Td
+( USER-SPECIFIED RUNOFF COEFFICIENT      = .5100) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 699.6000000000000227 Td
+( INITIAL SUBAREA FLOW-LENGTH\(FEET\)      =      70.00) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 691.1999999999999318 Td
+( DOWNSTREAM ELEVATION\(FEET\)             =      84.84) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 682.7999999999999545 Td
+( SUBAREA OVERLAND FLOW SLOPE\(PERCENT\)   =       2.00) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 674.3999999999999773 Td
+( SUBAREA OVERLAND TIME OF FLOW\(MIN.\)    =      7.400) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 666. Td
+( 100 YEAR RAINFALL INTENSITY\(INCH/HOUR\) =      3.044) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 657.5999999999999091 Td
+( SUBAREA AREA\(ACRES\)                    =       0.45) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 649.1999999999999318 Td
+( SUBAREA RUNOFF\(CFS\)                    =       0.70) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 640.7999999999999545 Td
+( TOTAL AREA\(ACRES\) =     0.45  TOTAL RUNOFF\(CFS\) =     0.70) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 632.3999999999999773 Td
+(---------------------------------------------------------------------------) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 624. Td
+( SUBAREA TIME OF CONCENTRATION TC\(MIN.\) =      8.600   \(manual entry\)) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 615.5999999999999091 Td
+( 100 YEAR RAINFALL INTENSITY\(INCH/HOUR\) =      3.044) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 607.1999999999999318 Td
+( PEAK FLOW RATE\(CFS\) AT THIS POINT      =       0.70) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 590.3999999999998636 Td
+(+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 581.9999999999998863 Td
+(FLOW PROCESS AT NODE     Node 4            IS CODE = 1) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 573.5999999999999091 Td
+(---------------------------------------------------------------------------) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 565.1999999999999318 Td
+(>>>>>CONFLUENCE OF MINOR STREAMS<<<<<) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 556.7999999999999545 Td
+(---------------------------------------------------------------------------) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 548.3999999999998636 Td
+( ** CONFLUENCE DATA **) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 539.9999999999998863 Td
+( STREAM  SOURCE                 RUNOFF      TC      INTENSITY    AREA) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 531.5999999999999091 Td
+( NUMBER                         \(CFS\)     \(MIN.\)    \(INCH/HR\)   \(ACRES\)) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 523.1999999999999318 Td
+(     1   Subarea A                  0.68     8.60       3.044      0.44) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 514.7999999999999545 Td
+(     2   Subarea B                  0.12     8.60       3.044      0.08) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 506.3999999999999773 Td
+(     3   Subarea C                  0.70     8.60       3.044      0.45) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 498. Td
+( RULE APPLIED: Note 2, Tc values within 10 percent) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 489.6000000000000227 Td
+( CONTROLLING TIME OF CONCENTRATION\(MIN.\) =       8.60) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 481.2000000000000455 Td
+( TOTAL AREA\(ACRES\) =     0.97   PEAK FLOW RATE\(CFS\) =     1.51) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 464.4000000000000909 Td
+(===========================================================================) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 456.0000000000001137 Td
+(                     SUBAREA SUMMARY TABLE) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 447.6000000000001364 Td
+(===========================================================================) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 439.2000000000001592 Td
+( SUBAREA        AREA     C      Ti     Tt     Tc      I       Q) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 430.8000000000001819 Td
+(               \(AC\)            \(MIN\)  \(MIN\)  \(MIN\)  \(IN/HR\)  \(CFS\)) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 422.4000000000002046 Td
+(---------------------------------------------------------------------------) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 414.0000000000002274 Td
+( Subarea A       0.44   .5100   7.40   1.22   8.60    3.044    0.68) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 405.6000000000002501 Td
+( Subarea B       0.08   .5100   7.40   1.22   8.60    3.044    0.12) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 397.2000000000002728 Td
+( Subarea C       0.45   .5100   7.40   1.22   8.60    3.044    0.70) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 388.8000000000002956 Td
+(---------------------------------------------------------------------------) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 380.4000000000003183 Td
+( TOTAL           0.97                                          1.50) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 363.6000000000003638 Td
+(===========================================================================) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 355.2000000000003865 Td
+(                       NODE SUMMARY TABLE) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 346.8000000000004093 Td
+(===========================================================================) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 338.400000000000432 Td
+( NODE           TYPE        ELEV\(FT\)  STREAMS  AREA\(AC\)   Tc\(MIN\)  Q\(CFS\)) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 330.0000000000004547 Td
+(---------------------------------------------------------------------------) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 321.6000000000004775 Td
+( Node 1        JUNCTION       86.80        0         -        -       -) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 313.2000000000005002 Td
+( Node 2        OUTFALL        81.18        1      0.97     8.87    1.49) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 304.800000000000523 Td
+( Node 3        JUNCTION       86.03        0         -        -       -) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 296.4000000000005457 Td
+( Node 4        JUNCTION       84.84        3      0.97     8.60    1.51) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 288.0000000000005684 Td
+( Node 5        JUNCTION       90.77        0         -        -       -) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 271.2000000000006139 Td
+(===========================================================================) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 262.8000000000006366 Td
+(                    FLOW PATH SUMMARY TABLE) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 254.4000000000006594 Td
+(===========================================================================) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 246.0000000000006821 Td
+( FLOW PATH       TYPE           L\(FT\)   S\(%\)     n      V\(FPS\)  Tt\(MIN\)) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 237.6000000000007049 Td
+(---------------------------------------------------------------------------) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 229.2000000000007276 Td
+( Flow path 1    Street gutter      284   1.979  0.0130    5.51    0.86) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 220.8000000000007503 Td
+( Flow path 2    Swale / ditch      197   0.604  0.0300    1.73    1.90) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 212.4000000000007731 Td
+( Flow path 4    Street gutter      295   2.010  0.0130    5.56    0.88) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 204.0000000000007958 Td
+( Flow path 4    Street gutter      115   3.183  0.0130    6.99    0.27) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 187.2000000000008413 Td
+(===========================================================================) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 178.800000000000864 Td
+(          SECTION 6 RATIONAL METHOD HYDROGRAPH) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 170.4000000000008868 Td
+(===========================================================================) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 162.0000000000009095 Td
+( STORM DURATION                 = 6 HOURS) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 153.6000000000009322 Td
+( COMPUTATION INTERVAL Tc\(MIN.\)  =      9) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 145.200000000000955 Td
+( NUMBER OF RAINFALL BLOCKS N    =     40) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 136.8000000000009777 Td
+( PEAK FLOW Qp\(CFS\)              =   0.68) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 128.4000000000010004 Td
+( TIME TO PEAK Tp\(MIN.\)          =    245   \(240 + 0.5 x Tc\)) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 120.0000000000010232 Td
+( RUNOFF VOLUME\(AC-IN\)           =   0.53) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 103.2000000000010687 Td
+(===========================================================================) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 94.8000000000010914 Td
+(                 END OF RATIONAL METHOD ANALYSIS) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 86.4000000000011141 Td
+(===========================================================================) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 78.0000000000011369 Td
+( Generated by HydroRational. Results are the responsibility of the) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 69.6000000000011596 Td
+( engineer of record and should be checked against the 2026 County of) Tj
+ET
+BT
+/F5 7.2 Tf
+8.2799999999999994 TL
+0. g
+42. 61.2000000000011823 Td
+( San Diego Hydrology Manual before submittal.) Tj
+ET
+BT
+/F1 7.5 Tf
+8.625 TL
+0.471 g
+42. 22. Td
+(La Jolla Drainage Study   |   2026-09-15) Tj
+ET
+BT
+/F1 7.5 Tf
+8.625 TL
+0.471 g
+518. 22. Td
+(Page 3 of 3) Tj
+ET
+endstream
+endobj
+1 0 obj
+<</Type /Pages
+/Kids [3 0 R 5 0 R 7 0 R ]
+/Count 3
+>>
+endobj
+9 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+10 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+11 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+12 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+13 0 obj
+<<
+/Type /Font
+/BaseFont /Courier
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+14 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+15 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+16 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+17 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Roman
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+18 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+19 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Italic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+20 0 obj
+<<
+/Type /Font
+/BaseFont /Times-BoldItalic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+21 0 obj
+<<
+/Type /Font
+/BaseFont /ZapfDingbats
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+22 0 obj
+<<
+/Type /Font
+/BaseFont /Symbol
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+2 0 obj
+<<
+/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]
+/Font <<
+/F1 9 0 R
+/F2 10 0 R
+/F3 11 0 R
+/F4 12 0 R
+/F5 13 0 R
+/F6 14 0 R
+/F7 15 0 R
+/F8 16 0 R
+/F9 17 0 R
+/F10 18 0 R
+/F11 19 0 R
+/F12 20 0 R
+/F13 21 0 R
+/F14 22 0 R
+>>
+/XObject <<
+>>
+>>
+endobj
+23 0 obj
+<<
+/Producer (jsPDF 2.5.1)
+/CreationDate (D:20260918003509-00'00')
+>>
+endobj
+24 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+/OpenAction [3 0 R /FitH null]
+/PageLayout /OneColumn
+>>
+endobj
+xref
+0 25
+0000000000 65535 f 
+0000029761 00000 n 
+0000031594 00000 n 
+0000000015 00000 n 
+0000000120 00000 n 
+0000008108 00000 n 
+0000008213 00000 n 
+0000018737 00000 n 
+0000018842 00000 n 
+0000029830 00000 n 
+0000029955 00000 n 
+0000030086 00000 n 
+0000030220 00000 n 
+0000030358 00000 n 
+0000030482 00000 n 
+0000030611 00000 n 
+0000030743 00000 n 
+0000030879 00000 n 
+0000031007 00000 n 
+0000031134 00000 n 
+0000031263 00000 n 
+0000031396 00000 n 
+0000031498 00000 n 
+0000031846 00000 n 
+0000031932 00000 n 
+trailer
+<<
+/Size 25
+/Root 24 0 R
+/Info 23 0 R
+/ID [ <C4D01F14662CD88D0EF266C02E88B01E> <C4D01F14662CD88D0EF266C02E88B01E> ]
+>>
+startxref
+32036
+%%EOF
