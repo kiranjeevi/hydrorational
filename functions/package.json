@@ -3,7 +3,7 @@
   "description": "CORS proxy for NOAA Atlas 14 and NRCS SSURGO",
   "main": "index.js",
   "private": true,
-  "engines": { "node": "20" },
+  "engines": { "node": "22" },
   "dependencies": {
     "firebase-functions": "^5.0.1"
   }
