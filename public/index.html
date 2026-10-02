@@ -121,6 +121,21 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
 .sbv{color:var(--t1)}
 .sbsep{width:1px;height:12px;background:var(--border)}
 #sbmsg{margin-left:auto;color:var(--green)}
+/* ── MANUAL PANEL ───────────────────────────────── */
+#manual-panel{position:fixed;top:44px;right:0;bottom:0;width:min(640px,48vw);min-width:320px;max-width:92vw;background:var(--bg1);border-left:1px solid var(--acc);box-shadow:-6px 0 18px rgba(0,0,0,.35);z-index:1500;display:flex;flex-direction:column}
+#manual-grip{position:absolute;left:-3px;top:0;bottom:0;width:6px;cursor:col-resize;z-index:2}
+.man-hd{display:flex;align-items:center;gap:6px;padding:6px 8px;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0}
+.man-tabs{display:flex;gap:2px;margin-right:auto}
+.man-hd .man-tab{border-color:transparent;color:var(--t3);font-weight:600}
+.man-hd .man-tab.on{background:var(--acc-bg);border-color:var(--acc);color:var(--acc-l)}
+.man-hd select{max-width:220px;font-size:10px;padding:3px 6px}
+.man-hd a,.man-hd button{font-size:10px;color:var(--acc-l);background:none;border:1px solid var(--border2);border-radius:3px;padding:3px 7px;text-decoration:none;cursor:pointer;font-family:var(--sans);white-space:nowrap}
+.man-hd a:hover,.man-hd button:hover{border-color:var(--acc)}
+#manual-body{flex:1;position:relative;background:#525659}
+#manual-body iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.man-ft{font-size:9px;color:var(--t4);padding:4px 8px;border-top:1px solid var(--border);flex-shrink:0}
+.mref{color:var(--acc-l);cursor:pointer;text-decoration:none;border-bottom:1px dotted var(--acc-l)}
+.mref:hover{color:var(--t1);border-bottom-style:solid}
 #toast{position:absolute;bottom:32px;left:50%;transform:translateX(-50%) translateY(6px);background:var(--acc-bg);border:1px solid var(--acc);color:var(--acc-l);padding:6px 16px;border-radius:4px;font-size:12px;z-index:9999;opacity:0;transition:all .2s;pointer-events:none;white-space:nowrap}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .pp{font-family:var(--sans);min-width:165px}
@@ -214,6 +229,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
 .leaflet-popup-content{margin:10px 14px!important}
 /* Leaflet.Draw overrides */
 .leaflet-draw-toolbar a{background-color:var(--bg1)!important;border-color:var(--border)!important}
+/* FEMA BFE labels sit on the line, small and legible over any basemap */
+.leaflet-tooltip.bfe-lbl{background:rgba(255,255,255,.88);border:1px solid #8e3a9d;color:#4a1d52;
+  font:600 10px/1.2 Inter,sans-serif;padding:1px 4px;box-shadow:none;white-space:nowrap}
+.leaflet-tooltip.bfe-lbl:before{display:none}
 </style>
 </head>
 <body>
@@ -244,15 +263,16 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
   <button class="drw" id="dt-lnk" data-tip="Draw link / flow path (L)" onclick="setTool('link')"><svg viewBox="0 0 24 24"><path d="M4 12h16M16 8l4 4-4 4"/></svg>Link / Flow path</button>
   <div class="tb-sep"></div>
   <div style="display:flex;gap:1px">
+    <button class="ico" id="help-btn" data-tip="User manual (F1)" onclick="toggleUserManual()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
     <button class="ico" data-tip="Fit project to view" onclick="fitProject()"><svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button>
-    <button class="ico" data-tip="Fetch FEMA / NHD data for current view" onclick="fetchAllGIS()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></button>
+    <button class="ico" data-tip="Refetch the switched on reference layers for this view" onclick="fetchAllGIS()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></button>
     <button class="ico" data-tip="Toggle results drawer" onclick="toggleDrawer()"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="15" x2="21" y2="15"/></svg></button>
   </div>
   <div class="tb-sp"></div>
   <button class="tb-thm" id="thm" onclick="toggleTheme()">🌙</button>
   <select class="tb-jur" id="scenario-sel" style="appearance:none;padding-right:20px" onchange="switchScenario(this.value)"></select>
   <button class="tb-jur" id="scenario-make" onclick="createProposed()">+ Proposed</button>
-  <button class="tb-jur" onclick="T('This build implements the 2026 County of San Diego Hydrology Manual')">
+  <button class="tb-jur" id="manual-btn" title="Open the 2026 County of San Diego Hydrology Manual" onclick="toggleManual()">
     <svg style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
     SD County 2026
     <svg style="width:9px;height:9px;stroke:currentColor;fill:none;stroke-width:2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
@@ -293,33 +313,24 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
       </div>
     </div>
 
-    <!-- Basemaps -->
-    <div class="lg open" id="lg-bm">
-      <div class="lg-hd" onclick="togG('lg-bm')"><span class="lg-arr">▶</span>
-        <svg style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Basemaps
-      </div>
-      <div class="lg-body" id="bm-items">
-        <!-- populated by JS -->
-      </div>
-    </div>
-
     <!-- Terrain -->
     <div class="lg open" id="lg-terrain">
       <div class="lg-hd" onclick="togG('lg-terrain')"><span class="lg-arr">&#9654;</span>
         <svg style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2" viewBox="0 0 24 24"><path d="M3 20l6-12 4 7 3-4 5 9z"/></svg>Terrain
       </div>
       <div class="lg-body">
-        <input type="file" id="terrain-file-input" accept=".tif,.tiff,.asc,.txt,.csv,.xyz" style="display:none"/>
+        <input type="file" id="terrain-file-input" accept=".tif,.tiff,.asc,.txt,.csv,.xyz,.dxf,.las,.laz" style="display:none"/>
         <div style="padding:4px 8px 2px 20px">
           <button class="btn-s" style="width:100%" onclick="fetchTerrain()">Fetch 3DEP for this view</button>
         </div>
         <div style="padding:2px 8px 6px 20px">
           <button class="btn-s" style="width:100%" onclick="pickTerrainFile()">Load survey or proposed surface</button>
-          <div style="font-size:9px;color:var(--t4);margin-top:3px;line-height:1.5">GeoTIFF, ESRI ASCII grid, or x,y,z points. Declare what the file cannot tell us:</div>
+          <div style="font-size:9px;color:var(--t4);margin-top:3px;line-height:1.5">GeoTIFF, ESRI ASCII grid, x,y,z points, CAD drawing (DXF) or lidar (LAS). Declare what the file cannot tell us:</div>
           <div class="f2" style="margin-top:4px">
             <select class="fsel" id="terr-crs" style="font-size:10px;padding:3px 6px">
               <option value="EPSG:2230">CA State Plane 6 (ft)</option>
               <option value="EPSG:2229">CA State Plane 5 (ft)</option>
+              <option value="EPSG:6340">UTM 11N NAD83 (m)</option>
               <option value="EPSG:4326">Lat / long WGS84</option>
             </select>
             <select class="fsel" id="terr-vunits" style="font-size:10px;padding:3px 6px">
@@ -335,6 +346,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
             </select>
           </div>
         </div>
+        <div id="dxf-pick" style="display:none;margin:2px 8px 6px 20px;padding:6px 7px;border:1px solid var(--acc);border-radius:3px"></div>
         <div id="terrain-items"></div>
         <div class="si"><div class="si-dot" style="background:#7a5c3a"></div><span class="si-name">Contours</span>
           <input class="fi fm" id="contour-int" value="5" style="width:38px;font-size:10px;padding:2px 4px;margin-right:5px" onchange="setContourInterval(this.value)"/>
@@ -343,7 +355,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
           <label class="tog"><input type="checkbox" id="tog-seam" onchange="toggleSeam(this.checked)"><span class="tog-tr"></span></label></div>
         <div style="padding:3px 8px 6px 20px">
           <button class="btn-s" style="width:100%" onclick="startProfile()">Draw a terrain profile</button>
+          <button class="btn-s" style="width:100%;margin-top:4px" onclick="startGrade()">Grade a pad or basin</button>
         </div>
+        <div id="grade-pick" style="display:none;margin:2px 8px 6px 20px;padding:6px 7px;border:1px solid var(--acc);border-radius:3px"></div>
         <div class="si"><div class="si-dot" style="background:#3090d8"></div><span class="si-name">Channels</span>
           <input class="fi fm" id="channel-ac" value="1" style="width:34px;font-size:10px;padding:2px 4px;margin-right:5px" onchange="setChannelThreshold(this.value)"/>
           <label class="tog"><input type="checkbox" id="tog-channels" onchange="toggleChannels(this.checked)"><span class="tog-tr"></span></label></div>
@@ -376,35 +390,35 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
           <div class="sub-lg-hd" onclick="togG('slg-fema')"><span class="lg-arr">▶</span>FEMA (NFHL)</div>
           <div class="lg-body">
             <div class="si"><div class="si-dot" style="background:var(--red)"></div><span class="si-name">Flood Hazard Zones</span><label class="tog"><input type="checkbox" id="tog-fema" onchange="toggleFEMA(this.checked)"><span class="tog-tr"></span></label></div>
-            <div class="si"><div class="si-dot" style="background:#f090b0"></div><span class="si-name">Base Flood Elevations</span><label class="tog"><input type="checkbox" onchange="T('BFE lines - coming soon')"><span class="tog-tr"></span></label></div>
+            <div class="si"><div class="si-dot" style="background:#8e3a9d"></div><span class="si-name">Base Flood Elevations</span><label class="tog"><input type="checkbox" id="tog-bfe" onchange="toggleBFE(this.checked)"><span class="tog-tr"></span></label></div>
           </div>
         </div>
         <div class="sub-lg open" id="slg-soils">
           <div class="sub-lg-hd" onclick="togG('slg-soils')"><span class="lg-arr">▶</span>NRCS Soils (SSURGO)</div>
           <div class="lg-body">
-            <div class="si"><div class="si-dot" style="background:#56d4a0"></div><span class="si-name">HSG Group A</span><label class="tog"><input type="checkbox" onchange="T('HSG A - click Fetch GIS button for current view')"><span class="tog-tr"></span></label></div>
-            <div class="si"><div class="si-dot" style="background:#a8d456"></div><span class="si-name">HSG Group B</span><label class="tog"><input type="checkbox" onchange="T('HSG B - click Fetch GIS button for current view')"><span class="tog-tr"></span></label></div>
-            <div class="si"><div class="si-dot" style="background:var(--amber)"></div><span class="si-name">HSG Group C</span><label class="tog"><input type="checkbox" onchange="T('HSG C - click Fetch GIS button for current view')"><span class="tog-tr"></span></label></div>
-            <div class="si"><div class="si-dot" style="background:var(--red)"></div><span class="si-name">HSG Group D</span><label class="tog"><input type="checkbox" onchange="T('HSG D - click Fetch GIS button for current view')"><span class="tog-tr"></span></label></div>
+            <div class="si"><div class="si-dot" style="background:#56d4a0"></div><span class="si-name">HSG Group A</span><label class="tog"><input type="checkbox" id="tog-hsg-A" onchange="toggleHSG('A',this.checked)"><span class="tog-tr"></span></label></div>
+            <div class="si"><div class="si-dot" style="background:#a8d456"></div><span class="si-name">HSG Group B</span><label class="tog"><input type="checkbox" id="tog-hsg-B" onchange="toggleHSG('B',this.checked)"><span class="tog-tr"></span></label></div>
+            <div class="si"><div class="si-dot" style="background:#e07b39"></div><span class="si-name">HSG Group C</span><label class="tog"><input type="checkbox" id="tog-hsg-C" onchange="toggleHSG('C',this.checked)"><span class="tog-tr"></span></label></div>
+            <div class="si"><div class="si-dot" style="background:#d04a4a"></div><span class="si-name">HSG Group D</span><label class="tog"><input type="checkbox" id="tog-hsg-D" onchange="toggleHSG('D',this.checked)"><span class="tog-tr"></span></label></div>
           </div>
         </div>
         <div class="sub-lg open" id="slg-nhd">
           <div class="sub-lg-hd" onclick="togG('slg-nhd')"><span class="lg-arr">▶</span>USGS Hydrography (NHD)</div>
           <div class="lg-body">
             <div class="si"><div class="si-dot" style="background:var(--acc)"></div><span class="si-name">Streams / Flowlines</span><label class="tog"><input type="checkbox" id="tog-nhd" onchange="toggleNHD(this.checked)"><span class="tog-tr"></span></label></div>
-            <div class="si"><div class="si-dot" style="background:#3090d8"></div><span class="si-name">Water bodies</span><label class="tog"><input type="checkbox" onchange="T('Water bodies - click Fetch GIS for current view')"><span class="tog-tr"></span></label></div>
+            <div class="si"><div class="si-dot" style="background:#3090d8"></div><span class="si-name">Water bodies</span><label class="tog"><input type="checkbox" id="tog-nhdwb" onchange="toggleWaterbodies(this.checked)"><span class="tog-tr"></span></label></div>
           </div>
         </div>
         <div class="sub-lg open" id="slg-nwi">
           <div class="sub-lg-hd" onclick="togG('slg-nwi')"><span class="lg-arr">▶</span>USFWS Wetlands (NWI)</div>
           <div class="lg-body">
-            <div class="si"><div class="si-dot" style="background:var(--green)"></div><span class="si-name">Wetlands</span><label class="tog"><input type="checkbox" onchange="T('NWI wetlands - click Fetch GIS for current view')"><span class="tog-tr"></span></label></div>
+            <div class="si"><div class="si-dot" style="background:var(--green)"></div><span class="si-name">Wetlands</span><label class="tog"><input type="checkbox" id="tog-nwi" onchange="toggleWetlands(this.checked)"><span class="tog-tr"></span></label></div>
           </div>
         </div>
         <div class="sub-lg" id="slg-nlcd">
           <div class="sub-lg-hd" onclick="togG('slg-nlcd')"><span class="lg-arr">▶</span>Land cover (NLCD)</div>
           <div class="lg-body">
-            <div class="si"><span class="si-name">NLCD 2021 Land Cover</span><label class="tog"><input type="checkbox" onchange="T('NLCD - Phase 3')"><span class="tog-tr"></span></label></div>
+            <div class="si"><span class="si-name">NLCD 2021 Land Cover</span><label class="tog"><input type="checkbox" id="tog-nlcd" onchange="toggleNLCD(this.checked)"><span class="tog-tr"></span></label></div>
           </div>
         </div>
       </div>
@@ -467,7 +481,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
     <!-- WELCOME -->
     <div id="v-welcome" class="wc">
       <div id="proj-file-name" style="display:none;font-size:10px;color:var(--green);font-family:JetBrains Mono,monospace;margin-bottom:2px"></div>
-      <div><div class="wt">Project workspace</div><div class="ws">Click an element on the map or use the cards below to start.</div></div>
+      <div><div class="wt">Project workspace</div><div class="ws">Click an element on the map or use the cards below to start. New here? <a class="mref" data-guide="quick-start">Read the quick start</a>.</div></div>
       <div class="wcard" onclick="openProject()">
         <div class="wci">&#128194;</div><div><div class="wct">Open a saved project</div><div class="wcb">Load a .json saved from HydroRational, or drop it on the map</div></div>
       </div>
@@ -478,7 +492,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
         <div class="wci">🌧</div><div><div class="wct">Enter NOAA Atlas 14 data</div><div class="wcb">Load the NOAA PFDS CSV for your site, or paste the table</div></div>
       </div>
       <div class="wdiv"></div>
-      <div style="font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.5px;text-transform:uppercase">Workflow</div>
+      <div style="font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.5px;text-transform:uppercase">Workflow <a class="mref" data-guide="running" style="text-transform:none;letter-spacing:0;font-weight:500">(user manual)</a></div>
       <div class="wstep"><div class="wnum">1</div><div><span class="wst">Draw subcatchments</span><span class="wsb">Click <strong>Subcatchment</strong> in the toolbar, place polygon vertices on the map, double-click to finish. Area auto-computes.</span></div></div>
       <div class="wstep"><div class="wnum">2</div><div><span class="wst">Set land use and soils</span><span class="wsb">Properties panel fills - C, Ti, Tc, I, Qp compute live as you type</span></div></div>
       <div class="wstep"><div class="wnum">3</div><div><span class="wst">Run Analysis</span><span class="wsb">Click Run Analysis → Section 6 hydrograph generates, results appear in bottom panel</span></div></div>
@@ -583,6 +597,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
           <div id="noaa-file-name" style="display:none;margin-top:5px;font-size:10px;color:var(--green);font-family:JetBrains Mono,monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
           <div style="margin-top:7px;font-size:10px;color:var(--t4);line-height:1.5">Three ways in: load the NOAA CSV, drag the CSV onto the boxes above, or paste the NOAA table into any box. The ARI column matching the design frequency is used, and latitude, longitude and location name are read from the file. NOAA blocks direct fetching from a browser, so the file is the fastest path.</div>
           <a class="nlink" href="https://hdsc.nws.noaa.gov/pfds/pfds_map_cont.html?bkmrk=ca" target="_blank">Open NOAA PFDS manually</a>
+          <a class="nlink mref" data-manual="app-b" style="border:none">Manual guidance on rainfall data (Appendix B)</a>
         </div>
         <div style="padding:10px 12px"><button class="btn-p" onclick="saveProjectInfo()">Save rainfall data →</button></div>
       </div>
@@ -597,12 +612,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
           </div>
           <div style="font-size:10px;margin-bottom:8px" id="proxy-state">No proxy, automatic fetching is off</div>
           <button class="btn-s" style="width:100%" id="noaa-auto-btn" onclick="autoFetchNOAA()">Auto-fetch NOAA Atlas 14</button>
-          <div style="font-size:10px;color:var(--t3);margin-top:5px">NOAA and the USDA soils service refuse browser requests from another origin. Deploying the included proxy removes that limit.</div>
+          <div style="font-size:10px;color:var(--t3);margin-top:5px">NOAA and the USDA soils service refuse browser requests from another origin. Deploying the included proxy removes that limit. <a class="mref" data-guide="troubleshooting">Troubleshooting</a></div>
           <label style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--t2);margin-top:8px">
             <input type="checkbox" id="opt-note3" checked onchange="toggleNote3(this.checked)"/>
             Use Note 3 effective Tc at junctions
           </label>
-          <div style="font-size:10px;color:var(--t3);margin-top:4px">Backs the intensity out of the combined Q and reads the matching Tc, so downstream flows do not fluctuate.</div>
+          <div style="font-size:10px;color:var(--t3);margin-top:4px">Backs the intensity out of the combined Q and reads the matching Tc, so downstream flows do not fluctuate. <a class="mref" data-guide="junctions">How the app reads Note 3</a></div>
         </div>
       </div>
     </div>
@@ -640,7 +655,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
             <div class="fr"><label class="fl">Area (ac)</label><input class="fi fm" id="sc-area" value="6.1" oninput="scChanged()"/></div>
             <div class="fr"><label class="fl">Avg slope (%)</label><input class="fi fm" id="sc-slope" value="2.0" oninput="scChanged()"/></div>
           </div>
-          <div class="fr"><label class="fl">Land use (Table 3-1)</label>
+          <div class="fr"><label class="fl">Land use (<a class="mref" data-manual="table-3-1">Table 3-1</a>)</label>
             <select class="fsel" id="sc-lu" onchange="scChanged()">
               <option value="0">Natural / Permanent Open Space (0%)</option>
               <option value="1">LDR Residential 1.0 DU/A (10%)</option>
@@ -661,7 +676,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
             <div class="fr"><label class="fl">% Impervious</label><input class="fi fm" id="sc-imp" value="40" oninput="scChanged()"/></div>
           </div>
         </div>
-        <div class="fs"><div class="fst">Computed C - Table 3-1 [Section 3.1.2]</div>
+        <div class="fs"><div class="fst">Computed C - <a class="mref" data-manual="table-3-1">Table 3-1</a> [<a class="mref" data-manual="sec-3.1.2">Section 3.1.2</a>]</div>
           <div class="cg">
             <div class="cc"><div class="cl">Runoff coeff C</div><div class="cv" id="rC">0.51</div></div>
             <div class="cc"><div class="cl">Weighted CA</div><div class="cv" id="rCA">3.11</div></div>
@@ -673,7 +688,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
         </div>
       </div>
       <div id="sc-t" style="display:none">
-        <div class="fs"><div class="fst">Initial Ti - Table 3-2 (FAA overland flow)</div>
+        <div class="fs"><div class="fst">Initial Ti - <a class="mref" data-manual="table-3-2">Table 3-2</a> (FAA overland flow)</div>
           <div class="f2">
             <div class="fr"><label class="fl">Overland length (ft)</label><input class="fi fm" id="sc-lov" value="70" oninput="scChanged()"/></div>
             <div class="fr"><label class="fl">Slope (%)</label><input class="fi fm" id="sc-slov" value="2.0" oninput="scChanged()"/></div>
@@ -699,14 +714,14 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
             <div class="cc"><div class="cl">Tt (min)</div><div class="cv" id="rTt">1.1</div><div style="font-size:9px;color:var(--t4)" id="rTtSrc"></div></div>
           </div>
         </div>
-        <div class="fs"><div class="fst">Peak flow: Q = CIA [Section 3.1.1]</div>
+        <div class="fs"><div class="fst">Peak flow: Q = CIA [<a class="mref" data-manual="sec-3.1.1">Section 3.1.1</a>]</div>
           <div class="cg">
             <div class="cc"><div class="cl">Tc = Ti + Tt (min)</div><div class="cv" id="rTc">8.5</div></div>
             <div class="cc"><div class="cl">I at Tc (in/hr)</div><div class="cv" id="rI">-</div></div>
             <div class="cc"><div class="cl">C value</div><div class="cv" id="rC2">0.51</div></div>
             <div class="cc"><div class="cl">Qp (cfs)</div><div class="cv" id="rQp" style="font-size:18px">-</div></div>
           </div>
-          <div style="margin-top:5px;font-size:10px;color:var(--t3)">I from NOAA Atlas 14 log-log interpolation at Tc [Section 3.1.3]</div>
+          <div style="margin-top:5px;font-size:10px;color:var(--t3)">I from NOAA Atlas 14 log-log interpolation at Tc [<a class="mref" data-manual="sec-3.1.3">Section 3.1.3</a>]</div>
         </div>
         <div class="brow">
           <button class="btn-s" onclick="scChanged()">Recalculate</button>
@@ -716,7 +731,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
       <div id="sc-h" style="display:none">
         <div style="padding:20px 12px;text-align:center;color:var(--t4)">
           <div style="font-size:32px;opacity:.3;margin-bottom:8px">📊</div>
-          <div style="color:var(--t2);font-size:12px">Section 6: Rational method hydrograph</div>
+          <div style="color:var(--t2);font-size:12px"><a class="mref" data-manual="sec-6">Section 6</a>: Rational method hydrograph</div>
           <div style="font-size:11px;margin-top:6px">Run Analysis to generate the 6-hour nested storm hydrograph for this subcatchment</div>
           <button class="btn-p" style="margin-top:12px" onclick="runAnalysis()">▶ Run Analysis</button>
         </div>
@@ -758,7 +773,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
       <div class="fs"><div class="fst">Subareas draining here</div>
         <div id="jct-tributaries"></div>
       </div>
-      <div class="fs"><div class="fst">MRM junction result [Section 3.4]</div>
+      <div class="fs"><div class="fst">MRM junction result [<a class="mref" data-manual="sec-3.4">Section 3.4</a>]</div>
         <div class="cg">
           <div class="cc"><div class="cl">Controlling Tc (min)</div><div class="cv" id="jct-Tc">-</div></div>
           <div class="cc"><div class="cl">Qp out (cfs)</div><div class="cv" id="jct-Qp">-</div></div>
@@ -800,7 +815,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
         <div class="fr" id="fp-n-row"><label class="fl">Manning n</label><input class="fi fm" id="fp-n" oninput="fpChanged()"/></div>
         <div class="fr" id="fp-dia-row" style="display:none"><label class="fl">Pipe diameter (in)</label><input class="fi fm" id="fp-dia" oninput="fpChanged()"/></div>
       </div>
-      <div class="fs"><div class="fst">Travel time [Section 3.1.4.2]</div>
+      <div class="fs"><div class="fst">Travel time [<a class="mref" data-manual="sec-3.1.4.2">Section 3.1.4.2</a>]</div>
         <div class="cg">
           <div class="cc"><div class="cl">Velocity</div><div class="cv" id="fpV">-</div></div>
           <div class="cc"><div class="cl">Tt</div><div class="cv" id="fpTt">-</div></div>
@@ -912,6 +927,24 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
 </div>
 
 </div><!-- /app -->
+
+<!-- MANUAL: the County's PDF, served from this origin because the County
+     server refuses to be framed -->
+<div id="manual-panel" style="display:none" role="complementary" aria-label="Manuals">
+  <div id="manual-grip" title="Drag to resize"></div>
+  <div class="man-hd">
+    <div class="man-tabs">
+      <button class="man-tab" id="man-tab-user" onclick="showManualDoc('user')" title="HydroRational user manual (F1)">User manual</button>
+      <button class="man-tab" id="man-tab-county" onclick="showManualDoc('county')" title="2026 County of San Diego Hydrology Manual">County manual</button>
+    </div>
+    <select class="fsel" id="manual-jump" title="Go to"></select>
+    <a id="manual-newtab" target="_blank" rel="noopener" title="Open in a new tab">New tab</a>
+    <button onclick="closeManual()" title="Close (Esc)">Close</button>
+  </div>
+  <div id="manual-body"></div>
+  <div class="man-ft"><span id="manual-ft-user">HydroRational user manual, version 0.9.0 beta.</span><span id="manual-ft-county">County of San Diego, April 2026, effective July 1, 2026.
+    <a id="manual-source" href="https://www.sandiegocounty.gov/content/sdc/dpw/flood/hydrologymanual1.html" target="_blank" rel="noopener" style="color:var(--acc-l)">Check the County page for revisions</a></span></div>
+</div>
 
 <script>
 'use strict';
@@ -1041,16 +1074,6 @@ function renderBasemapUI() {
         'id="bmb-' + bm.id + '" onclick="switchBasemap(\'' + bm.id + '\')">' + bm.label + '</button>';
     }).join('');
   }
-  // Layer panel items
-  var items = document.getElementById('bm-items');
-  if (items) {
-    items.innerHTML = BASEMAPS.map(function(bm) {
-      return '<div class="li' + (bm.id === DEFAULT_BASEMAP ? ' sel' : '') + '" ' +
-        'id="bml-' + bm.id + '" onclick="switchBasemap(\'' + bm.id + '\')">' +
-        '<div class="li-dot" style="background:var(--t4)"></div>' +
-        '<span class="li-name">' + bm.label + '</span></div>';
-    }).join('');
-  }
 }
 
 function switchBasemap(id) {
@@ -1063,9 +1086,7 @@ function switchBasemap(id) {
   // Update bar buttons
   BASEMAPS.forEach(function(bm) {
     var btn = document.getElementById('bmb-' + bm.id);
-    var li  = document.getElementById('bml-' + bm.id);
     if (btn) btn.classList.toggle('on', bm.id === id);
-    if (li)  li.classList.toggle('sel', bm.id === id);
   });
 
   var sbm = document.getElementById('sbm');
@@ -1094,7 +1115,7 @@ function setTool(t) {
     select:'Select', subcatchment:'Subcatchment',
     junction:'Junction / Node', basin:'Detention basin',
     outfall:'Outfall', link:'Link / Flow path', profile:'Terrain profile',
-    delineate:'Delineate watershed'
+    delineate:'Delineate watershed', grade:'Grade a pad or basin'
   };
   var stool = document.getElementById('stool');
   var sbmsg = document.getElementById('sbmsg');
@@ -1141,6 +1162,13 @@ function setTool(t) {
     T('Click on map to place outfall.');
   } else if (t === 'delineate') {
     document.body.style.cursor = 'crosshair';
+  } else if (t === 'grade') {
+    activeDrawer = new L.Draw.Polygon(map, {
+      shapeOptions: {color:'#1b4f72', fillColor:'#2E86C1', fillOpacity:0.15, weight:2, dashArray:'4,3', pane:'paneTerrain'},
+      allowIntersection: false
+    });
+    activeDrawer.enable();
+    T('Draw the pad or basin outline. Double-click to finish.');
   } else if (t === 'profile') {
     activeDrawer = new L.Draw.Polyline(map, {
       shapeOptions: {color:'#7a5c3a', weight:2, dashArray:'4,3', pane:'paneTerrain'}
@@ -1182,6 +1210,7 @@ function geodesicArea(latlngs) {
 function selectSubarea(id) {
   appState.activeScId = id;
   appState.activeNodeId = null;
+  appState.activeFpId = null;
   var sc = appState.subareas[id];
   if (!sc) return;
 
@@ -1378,6 +1407,8 @@ function toggleScVisibility(id, on) {
   var sc = appState.subareas[id];
   if (!sc || !sc.layer) return;
   on ? drawnItems.addLayer(sc.layer) : drawnItems.removeLayer(sc.layer);
+  // the traced route belongs to the subarea and follows it
+  if (sc.pathLayer) on ? drawnItems.addLayer(sc.pathLayer) : drawnItems.removeLayer(sc.pathLayer);
 }
 
 /* ── HYDROLOGY ENGINE ───────────────────────────────────────────── */
@@ -1672,79 +1703,392 @@ function readNoaaInputs() {
     computeSubarea(appState.subareas[appState.activeScId]);
   }
 }
-function onNoaaChange() { readNoaaInputs(); }
+function onNoaaChange() { appState.noaaSource = 'manual'; readNoaaInputs(); }
 
 /* ── GIS OVERLAYS ───────────────────────────────────────────────── */
+/* Reference layers for the current view. Each is fetched once and
+   cached. The globe button in the toolbar refetches every layer that
+   is switched on, for wherever the map now sits. None of them feeds a
+   calculation; they are there to be looked at beside the model. */
 var gisGroups = {};
+var NFHL_URL = 'https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer';
+var NHD_URL  = 'https://hydro.nationalmap.gov/arcgis/rest/services/NHDPlus_HR/MapServer';
+var NWI_URL  = 'https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/rest/services/Wetlands/MapServer/0';
+/* Layer numbers checked against the services' own listings. NHDPlus HR
+   layer 2 is NHDPoint, not flowlines, which is what the stream toggle
+   used to ask for. */
+var GIS_LAYER = { femaZones: 28, femaBfe: 16, femaXs: 14, nhdFlowline: 3, nhdWaterbody: 9 };
+var NFHL_NULL = -9999;                     // NFHL writes this for "no value"
 
-function toggleFEMA(on) {
-  if (!on) { if(gisGroups.fema){map.removeLayer(gisGroups.fema);} return; }
-  if (gisGroups.fema) { map.addLayer(gisGroups.fema); return; }
-  T('Fetching FEMA flood zones…');
+function arcgisQueryURL(base, fields, fmt, extra) {
   var b = map.getBounds();
-  var bbox = b.getWest()+','+b.getSouth()+','+b.getEast()+','+b.getNorth();
-  fetch('https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28/query' +
-    '?where=1%3D1&inSR=4326&geometry=' + encodeURIComponent(bbox) +
+  var bbox = [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()].join(',');
+  return base + '/query?where=1%3D1&inSR=4326&outSR=4326' +
+    '&geometry=' + encodeURIComponent(bbox) +
     '&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelIntersects' +
-    '&outFields=FLD_ZONE%2CZONE_SUBTY&returnGeometry=true&f=pjson')
-  .then(function(r){return r.json();})
-  .then(function(data){
-    var features = data.features || [];
-    if (!features.length) { T('No FEMA flood zone features in current view'); return; }
-    var group = L.featureGroup();
-    features.forEach(function(f){
-      var zone = (f.attributes||{}).FLD_ZONE || '?';
-      var sfha = zone.startsWith('A') || zone.startsWith('V');
-      var rings = f.geometry && f.geometry.rings ? f.geometry.rings : [];
-      if (!rings.length) return;
-      var latlngs = rings.map(function(r){ return r.map(function(pt){return [pt[1],pt[0]];}); });
-      L.polygon(latlngs, {
-        color: sfha ? '#c02020' : '#4070b0',
-        fillColor: sfha ? '#e05050' : '#5090c0',
-        fillOpacity: 0.3, weight: 1
-      }).bindTooltip('FEMA Zone ' + zone, {direction:'top'}).addTo(group);
-    });
-    gisGroups.fema = group;
-    map.addLayer(group);
-    T('✓ FEMA: ' + features.length + ' flood zone features loaded');
-  })
-  .catch(function(){ T('FEMA fetch failed - requires internet connection'); });
+    '&outFields=' + encodeURIComponent(fields) + '&returnGeometry=true&f=' + fmt + (extra || '');
 }
 
-function toggleNHD(on) {
-  if (!on) { if(gisGroups.nhd){map.removeLayer(gisGroups.nhd);} return; }
-  if (gisGroups.nhd) { map.addLayer(gisGroups.nhd); return; }
-  T('Fetching NHD stream network…');
-  var b = map.getBounds();
-  var bbox = b.getWest()+','+b.getSouth()+','+b.getEast()+','+b.getNorth();
-  fetch('https://hydro.nationalmap.gov/arcgis/rest/services/NHDPlus_HR/MapServer/2/query' +
-    '?where=1%3D1&geometry=' + encodeURIComponent(bbox) +
-    '&geometryType=esriGeometryEnvelope&outFields=GNIS_NAME%2CFTYPE&f=geojson&resultRecordCount=300')
-  .then(function(r){return r.json();})
-  .then(function(data){
-    var feats = (data.features||[]).filter(function(f){return f.geometry;});
-    if (!feats.length) { T('No NHD features in this view - pan to a watershed area'); return; }
-    gisGroups.nhd = L.geoJSON(data, {
-      style: function(f){ return {color:'#2E86C1',weight:1.5,opacity:0.8}; },
-      onEachFeature: function(f,layer){
-        var n=(f.properties||{}).gnis_name||'';
-        if(n) layer.bindTooltip(n,{direction:'top'});
+function gisJSON(u) {
+  return fetch(u).then(function (r) {
+    if (!r.ok) throw new Error('the service returned ' + r.status);
+    return r.json();
+  }).then(function (d) {
+    if (d && d.error) throw new Error((d.error.message || 'service error').replace(/\.$/, ''));
+    return d;
+  });
+}
+
+function gisChecked(togId) {
+  var el = document.getElementById(togId);
+  return !!(el && el.checked);
+}
+
+/* Drop a cached layer, from the map as well as the cache. */
+function dropGis(key) {
+  if (gisGroups[key]) { map.removeLayer(gisGroups[key]); gisGroups[key] = null; }
+}
+
+/* Show, hide, or fetch. A fetch that lands after the toggle was turned
+   off again is cached but not shown. */
+function gisToggle(key, togId, on, load) {
+  if (!on) { if (gisGroups[key]) map.removeLayer(gisGroups[key]); return; }
+  if (gisGroups[key]) { map.addLayer(gisGroups[key]); return; }
+  load(function (group) {
+    gisGroups[key] = group;
+    if (group && gisChecked(togId)) map.addLayer(group);
+  });
+}
+
+/* FEMA flood hazard zones */
+function toggleFEMA(on) {
+  gisToggle('fema', 'tog-fema', on, function (done) {
+    T('Fetching FEMA flood zones...');
+    gisJSON(arcgisQueryURL(NFHL_URL + '/' + GIS_LAYER.femaZones, 'FLD_ZONE,ZONE_SUBTY', 'pjson'))
+    .then(function (data) {
+      var features = data.features || [];
+      if (!features.length) { T('No FEMA flood zone features in current view'); return; }
+      var group = L.featureGroup();
+      features.forEach(function (f) {
+        var zone = (f.attributes || {}).FLD_ZONE || '?';
+        var sfha = zone.charAt(0) === 'A' || zone.charAt(0) === 'V';
+        var rings = f.geometry && f.geometry.rings ? f.geometry.rings : [];
+        if (!rings.length) return;
+        var latlngs = rings.map(function (r) { return r.map(function (pt) { return [pt[1], pt[0]]; }); });
+        L.polygon(latlngs, {
+          color: sfha ? '#c02020' : '#4070b0',
+          fillColor: sfha ? '#e05050' : '#5090c0',
+          fillOpacity: 0.3, weight: 1
+        }).bindTooltip('FEMA Zone ' + zone, {direction: 'top'}).addTo(group);
+      });
+      done(group);
+      T('FEMA: ' + features.length + ' flood zone features loaded');
+    })
+    .catch(function (e) { T('FEMA fetch failed: ' + e.message); });
+  });
+}
+
+/* FEMA base flood elevations and cross sections.
+   BFE lines carry ELEV with its unit and datum. Cross sections carry the
+   regulatory water surface (WSEL_REG) from the effective study. Both
+   are published values; nothing here interpolates or adjusts them. */
+function nfhlNum(v) {
+  return (typeof v === 'number' && isFinite(v) && v > NFHL_NULL + 1) ? v : null;
+}
+function unitAbbr(u) {
+  u = String(u || '').toLowerCase();
+  return /met/.test(u) ? 'm' : 'ft';
+}
+function fmtElevLabel(v) {
+  return Math.abs(v - Math.round(v)) < 1e-9 ? String(Math.round(v)) : v.toFixed(1);
+}
+function esriPaths(g) {
+  return ((g && g.paths) || []).map(function (p) {
+    return p.map(function (q) { return [q[1], q[0]]; });
+  }).filter(function (p) { return p.length > 1; });
+}
+function bfeLinesFromEsri(data) {
+  return ((data && data.features) || []).map(function (f) {
+    var a = f.attributes || {};
+    return { elev: nfhlNum(a.ELEV), unit: unitAbbr(a.LEN_UNIT),
+             datum: String(a.V_DATUM || '').trim(), paths: esriPaths(f.geometry) };
+  }).filter(function (b) { return b.elev !== null && b.paths.length; });
+}
+function xsFromEsri(data) {
+  return ((data && data.features) || []).map(function (f) {
+    var a = f.attributes || {};
+    return { letter: String(a.XS_LTR || '').trim(), wsel: nfhlNum(a.WSEL_REG),
+             bed: nfhlNum(a.STRMBED_EL), station: nfhlNum(a.STREAM_STN),
+             stream: String(a.WTR_NM || '').trim(), unit: unitAbbr(a.LEN_UNIT),
+             datum: String(a.V_DATUM || '').trim(), paths: esriPaths(f.geometry) };
+  }).filter(function (x) { return x.paths.length; });
+}
+function bfeLabel(b) {
+  return 'BFE ' + fmtElevLabel(b.elev) + ' ' + b.unit + (b.datum ? ' ' + b.datum : '');
+}
+function xsLabel(x) {
+  var s = 'Cross section' + (x.letter ? ' ' + x.letter : '');
+  if (x.stream) s += ', ' + x.stream;
+  if (x.wsel !== null) s += ', 1% WSEL ' + x.wsel.toFixed(1) + ' ' + x.unit + (x.datum ? ' ' + x.datum : '');
+  if (x.bed !== null) s += ', bed ' + x.bed.toFixed(1);
+  return s;
+}
+
+function toggleBFE(on) {
+  gisToggle('bfe', 'tog-bfe', on, function (done) {
+    T('Fetching FEMA base flood elevations...');
+    var base = NFHL_URL + '/';
+    Promise.all([
+      gisJSON(arcgisQueryURL(base + GIS_LAYER.femaBfe, 'ELEV,LEN_UNIT,V_DATUM', 'pjson')),
+      gisJSON(arcgisQueryURL(base + GIS_LAYER.femaXs,
+        'XS_LTR,WSEL_REG,STRMBED_EL,WTR_NM,STREAM_STN,LEN_UNIT,V_DATUM', 'pjson'))
+        .catch(function () { return { features: [] }; })     // lines alone still help
+    ]).then(function (res) {
+      var bfes = bfeLinesFromEsri(res[0]), xss = xsFromEsri(res[1]);
+      if (!bfes.length && !xss.length) {
+        T('No base flood elevations or cross sections in this view. Zone A areas have none published.');
+        return;
       }
-    }).addTo(map);
-    T('✓ NHD: ' + feats.length + ' stream features loaded');
-  })
-  .catch(function(){ T('NHD fetch failed - requires internet connection'); });
+      var group = L.featureGroup();
+      xss.forEach(function (x) {
+        L.polyline(x.paths, { color: '#1b2a49', weight: 1.5, opacity: 0.85, dashArray: '6,4' })
+          .bindTooltip(xsLabel(x), { sticky: true }).addTo(group);
+      });
+      bfes.forEach(function (b) {
+        L.polyline(b.paths, { color: '#8e3a9d', weight: 2.5, opacity: 0.95 })
+          .bindTooltip(bfeLabel(b), { permanent: true, direction: 'center', className: 'bfe-lbl' })
+          .addTo(group);
+      });
+      group.bfeData = { bfes: bfes, xss: xss };
+      done(group);
+      T('FEMA: ' + bfes.length + ' base flood elevation lines, ' + xss.length + ' cross sections');
+    }).catch(function (e) { T('BFE fetch failed: ' + e.message); });
+  });
 }
 
-function fetchAllGIS() {
-  T('Fetching GIS data for current view…');
-  var togFema = document.getElementById('tog-fema');
-  var togNhd  = document.getElementById('tog-nhd');
-  if (togFema && togFema.checked) { gisGroups.fema=null; toggleFEMA(true); }
-  if (togNhd  && togNhd.checked)  { gisGroups.nhd=null;  toggleNHD(true);  }
-  if ((!togFema||!togFema.checked) && (!togNhd||!togNhd.checked)) {
-    T('Enable FEMA or NHD layers in the panel first, then click Fetch');
+/* USGS NHD flowlines and waterbodies */
+function toggleNHD(on) {
+  gisToggle('nhd', 'tog-nhd', on, function (done) {
+    T('Fetching NHD stream network...');
+    gisJSON(arcgisQueryURL(NHD_URL + '/' + GIS_LAYER.nhdFlowline, 'gnis_name,ftype', 'geojson',
+                           '&resultRecordCount=500'))
+    .then(function (data) {
+      var feats = (data.features || []).filter(function (f) { return f.geometry; });
+      if (!feats.length) { T('No NHD flowlines in this view'); return; }
+      done(L.geoJSON({ type: 'FeatureCollection', features: feats }, {
+        style: function () { return { color: '#2E86C1', weight: 1.5, opacity: 0.8 }; },
+        onEachFeature: function (f, layer) {
+          var n = (f.properties || {}).gnis_name || '';
+          if (n) layer.bindTooltip(n, { direction: 'top' });
+        }
+      }));
+      T('NHD: ' + feats.length + ' stream features loaded');
+    })
+    .catch(function (e) { T('NHD fetch failed: ' + e.message); });
+  });
+}
+
+function toggleWaterbodies(on) {
+  gisToggle('nhdwb', 'tog-nhdwb', on, function (done) {
+    T('Fetching NHD waterbodies...');
+    gisJSON(arcgisQueryURL(NHD_URL + '/' + GIS_LAYER.nhdWaterbody, 'gnis_name,ftype', 'geojson',
+                           '&resultRecordCount=300'))
+    .then(function (data) {
+      var feats = (data.features || []).filter(function (f) { return f.geometry; });
+      if (!feats.length) { T('No NHD waterbodies in this view'); return; }
+      done(L.geoJSON({ type: 'FeatureCollection', features: feats }, {
+        style: function () { return { color: '#1f5f8b', weight: 1, fillColor: '#3090d8', fillOpacity: 0.35 }; },
+        onEachFeature: function (f, layer) {
+          var p = f.properties || {};
+          var n = p.gnis_name || 'Unnamed waterbody';
+          layer.bindTooltip(n, { direction: 'top' });
+        }
+      }));
+      T('NHD: ' + feats.length + ' waterbodies loaded');
+    })
+    .catch(function (e) { T('Waterbody fetch failed: ' + e.message); });
+  });
+}
+
+/* USFWS National Wetlands Inventory */
+var NWI_COLORS = {
+  'Freshwater Emergent Wetland': '#6fbf73',
+  'Freshwater Forested/Shrub Wetland': '#2e7d4f',
+  'Freshwater Pond': '#2E86C1',
+  'Lake': '#1f5f8b',
+  'Riverine': '#5dade2',
+  'Estuarine and Marine Wetland': '#48a9a6',
+  'Estuarine and Marine Deepwater': '#1b4f72'
+};
+function nwiProps(p) {
+  p = p || {};
+  var g = function (k) { return p['Wetlands.' + k] !== undefined ? p['Wetlands.' + k] : p[k]; };
+  return { code: g('ATTRIBUTE') || '', type: g('WETLAND_TYPE') || 'Wetland', acres: g('ACRES') };
+}
+function toggleWetlands(on) {
+  gisToggle('nwi', 'tog-nwi', on, function (done) {
+    T('Fetching NWI wetlands...');
+    gisJSON(arcgisQueryURL(NWI_URL, 'Wetlands.ATTRIBUTE,Wetlands.WETLAND_TYPE,Wetlands.ACRES', 'geojson'))
+    .then(function (data) {
+      var feats = (data.features || []).filter(function (f) { return f.geometry; });
+      if (!feats.length) { T('No mapped wetlands in this view'); return; }
+      done(L.geoJSON({ type: 'FeatureCollection', features: feats }, {
+        style: function (f) {
+          var c = NWI_COLORS[nwiProps(f.properties).type] || '#3cb371';
+          return { color: c, weight: 1, fillColor: c, fillOpacity: 0.35 };
+        },
+        onEachFeature: function (f, layer) {
+          var p = nwiProps(f.properties);
+          layer.bindTooltip(p.code + ', ' + p.type +
+            (typeof p.acres === 'number' ? ', ' + p.acres.toFixed(2) + ' ac' : ''), { direction: 'top' });
+        }
+      }));
+      T('NWI: ' + feats.length + ' wetland polygons loaded' +
+        (data.exceededTransferLimit ? '. The service capped the result, zoom in for the rest.' : ''));
+    })
+    .catch(function (e) { T('NWI fetch failed: ' + e.message); });
+  });
+}
+
+/* NLCD 2021 land cover, as WMS tiles from MRLC */
+var NLCD_LC_LAYER = 'NLCD_2021_Land_Cover_L48';
+function toggleNLCD(on) {
+  if (!on) { if (gisGroups.nlcd) map.removeLayer(gisGroups.nlcd); return; }
+  if (!gisGroups.nlcd) {
+    gisGroups.nlcd = L.tileLayer.wms('https://www.mrlc.gov/geoserver/mrlc_display/wms', {
+      layers: NLCD_LC_LAYER, format: 'image/png', transparent: true, opacity: 0.55,
+      attribution: 'NLCD 2021, MRLC'
+    });
   }
+  map.addLayer(gisGroups.nlcd);
+  T('NLCD 2021 land cover shown. Reference only; C still comes from Table 3-1.');
+}
+
+/* NRCS SSURGO hydrologic soil groups as polygons.
+   Soil Data Access returns map unit polygons as WKT through the proxy.
+   Dual groups such as A/D are filed under their first letter and keep
+   the full label in the tooltip. */
+var HSG_COLORS = { A: '#56d4a0', B: '#a8d456', C: '#e07b39', D: '#d04a4a' };
+var SOILS_MAX_SQMI = 8;                    // SDA times out on much more
+
+function parseWKTPolygons(wkt) {
+  var m = /^\s*(MULTIPOLYGON|POLYGON)\s*(\(.*\))\s*$/i.exec(String(wkt || ''));
+  if (!m) return [];
+  var body = m[2], i = 0;
+  function ws() { while (i < body.length && /\s/.test(body[i])) i++; }
+  function node() {                        // body[i] is '('
+    i++; ws();
+    if (body[i] === '(') {
+      var out = [];
+      for (;;) {
+        ws(); out.push(node()); ws();
+        if (body[i] === ',') { i++; continue; }
+        i++; return out;
+      }
+    }
+    var j = body.indexOf(')', i), txt = body.slice(i, j);
+    i = j + 1;
+    return txt.split(',').map(function (p) {
+      var xy = p.trim().split(/\s+/);
+      return [+xy[1], +xy[0]];
+    });
+  }
+  var tree = node();
+  return /^MULTI/i.test(m[1]) ? tree : [tree];
+}
+
+function soilsSQL(w, s, e, n) {
+  var f = function (v) { return v.toFixed(6); };
+  var bb = 'polygon((' + f(w) + ' ' + f(s) + ', ' + f(e) + ' ' + f(s) + ', ' + f(e) + ' ' + f(n) +
+           ', ' + f(w) + ' ' + f(n) + ', ' + f(w) + ' ' + f(s) + '))';
+  return "SELECT P.mukey, (SELECT TOP 1 co.hydgrp FROM component co WHERE co.mukey = P.mukey " +
+         "AND co.majcompflag = 'Yes' ORDER BY co.comppct_r DESC) AS hsg, " +
+         "P.mupolygongeo.STAsText() AS wkt FROM mupolygon P WHERE P.mupolygonkey IN " +
+         "(SELECT * FROM SDA_Get_Mupolygonkey_from_intersection_with_WktWgs84('" + bb + "'))";
+}
+
+function soilRowsToGroups(rows) {
+  var groups = { A: L.featureGroup(), B: L.featureGroup(), C: L.featureGroup(), D: L.featureGroup() };
+  var counts = { A: 0, B: 0, C: 0, D: 0, none: 0 };
+  (rows || []).forEach(function (r) {
+    var label = String(r[1] || '').trim(), g = label.charAt(0).toUpperCase();
+    if (!groups[g]) { counts.none++; return; }
+    var polys = parseWKTPolygons(r[2]);
+    if (!polys.length) return;
+    L.polygon(polys, { color: HSG_COLORS[g], weight: 1, fillColor: HSG_COLORS[g], fillOpacity: 0.3 })
+      .bindTooltip('HSG ' + label + ', map unit ' + r[0], { direction: 'top' })
+      .addTo(groups[g]);
+    counts[g]++;
+  });
+  return { groups: groups, counts: counts };
+}
+
+var soilsLoading = false;
+function loadSoilsMap() {
+  var b = map.getBounds();
+  var wMi = map.distance([b.getCenter().lat, b.getWest()], [b.getCenter().lat, b.getEast()]) / 1609.344;
+  var hMi = map.distance([b.getSouth(), b.getCenter().lng], [b.getNorth(), b.getCenter().lng]) / 1609.344;
+  if (wMi * hMi > SOILS_MAX_SQMI) {
+    T('Zoom in to show soils. The view is ' + (wMi * hMi).toFixed(0) +
+      ' square miles and Soil Data Access handles about ' + SOILS_MAX_SQMI + '.');
+    return false;
+  }
+  var u = viaProxy('https://SDMDataAccess.sc.egov.usda.gov/Tabular/post.rest');
+  if (!u) { T('Soil polygons come through the proxy. Set it in Options first.'); return false; }
+  soilsLoading = true;
+  T('Fetching NRCS SSURGO soil groups...');
+  fetch(u, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: soilsSQL(b.getWest(), b.getSouth(), b.getEast(), b.getNorth()), format: 'JSON' })
+  }).then(function (r) {
+    if (!r.ok) throw new Error('the proxy returned ' + r.status);
+    return r.json();
+  }).then(function (d) {
+    soilsLoading = false;
+    var rows = (d && d.Table) || [];
+    if (!rows.length) { T('No SSURGO map units in this view'); return; }
+    var res = soilRowsToGroups(rows);
+    ['A', 'B', 'C', 'D'].forEach(function (g) {
+      gisGroups['hsg' + g] = res.groups[g];
+      if (gisChecked('tog-hsg-' + g)) map.addLayer(res.groups[g]);
+    });
+    var c = res.counts;
+    T('SSURGO: A ' + c.A + ', B ' + c.B + ', C ' + c.C + ', D ' + c.D + ' map unit polygons' +
+      (c.none ? ', ' + c.none + ' with no group' : ''));
+  }).catch(function (e) { soilsLoading = false; T('Soils fetch failed: ' + e.message); });
+  return true;
+}
+
+function toggleHSG(g, on) {
+  var key = 'hsg' + g;
+  if (!on) { if (gisGroups[key]) map.removeLayer(gisGroups[key]); return; }
+  if (gisGroups[key]) { map.addLayer(gisGroups[key]); return; }
+  if (!soilsLoading) loadSoilsMap();       // one fetch fills all four groups
+}
+
+/* The toolbar globe: refetch everything switched on, for this view. */
+var GIS_TOGGLES = [
+  { tog: 'tog-fema',  keys: ['fema'],  fn: function () { toggleFEMA(true); } },
+  { tog: 'tog-bfe',   keys: ['bfe'],   fn: function () { toggleBFE(true); } },
+  { tog: 'tog-nhd',   keys: ['nhd'],   fn: function () { toggleNHD(true); } },
+  { tog: 'tog-nhdwb', keys: ['nhdwb'], fn: function () { toggleWaterbodies(true); } },
+  { tog: 'tog-nwi',   keys: ['nwi'],   fn: function () { toggleWetlands(true); } }
+];
+function fetchAllGIS() {
+  var any = false;
+  GIS_TOGGLES.forEach(function (t) {
+    if (!gisChecked(t.tog)) return;
+    any = true;
+    t.keys.forEach(dropGis);
+    t.fn();
+  });
+  var soils = ['A', 'B', 'C', 'D'].filter(function (g) { return gisChecked('tog-hsg-' + g); });
+  if (soils.length) {
+    any = true;
+    ['A', 'B', 'C', 'D'].forEach(function (g) { dropGis('hsg' + g); });
+    if (!soilsLoading) loadSoilsMap();
+  }
+  if (!any) T('Switch on a reference layer in the panel first, then click Fetch');
 }
 
 /* ── ADDRESS SEARCH ─────────────────────────────────────────────── */
@@ -1838,17 +2182,30 @@ function goToResult(lat, lon, name) {
   crd.style.cssText = 'font-size:10px;color:var(--t3);font-family:JetBrains Mono,monospace;margin-bottom:8px';
   box.appendChild(crd);
 
+  var inCounty = inSanDiegoCounty(lat, lon);
+  var autoRain = !!proxyBase() && inCounty;
+  if (!inCounty) {
+    var out = document.createElement('div');
+    out.textContent = 'Outside San Diego County. The 2026 County manual does not apply here.';
+    out.style.cssText = 'font-size:10px;color:var(--t3);margin-bottom:8px;line-height:1.4';
+    box.appendChild(out);
+  }
+
   var b1 = document.createElement('button');
-  b1.textContent = 'Set as project site';
+  b1.textContent = autoRain ? 'Set as project site and fetch rainfall' : 'Set as project site';
   b1.style.cssText = 'width:100%;background:var(--acc);border:none;color:#fff;font-size:11px;font-weight:600;padding:6px;border-radius:3px;cursor:pointer;font-family:Inter,sans-serif;margin-bottom:4px';
   b1.onclick = function() { useAsProjectSite(lat, lon, shortName); map.closePopup(); };
   box.appendChild(b1);
 
-  var b2 = document.createElement('button');
-  b2.textContent = 'Open NOAA Atlas 14 for here';
-  b2.style.cssText = 'width:100%;background:var(--acc-bg);border:1px solid var(--acc);color:var(--acc-l);font-size:11px;font-weight:600;padding:6px;border-radius:3px;cursor:pointer;font-family:Inter,sans-serif';
-  b2.onclick = function() { useAsProjectSite(lat, lon, shortName); map.closePopup(); openNOAASite(); };
-  box.appendChild(b2);
+  // With a proxy the rainfall arrives on its own, so the NOAA page is only
+  // offered when it is still the way in.
+  if (!autoRain) {
+    var b2 = document.createElement('button');
+    b2.textContent = 'Open NOAA Atlas 14 for here';
+    b2.style.cssText = 'width:100%;background:var(--acc-bg);border:1px solid var(--acc);color:var(--acc-l);font-size:11px;font-weight:600;padding:6px;border-radius:3px;cursor:pointer;font-family:Inter,sans-serif';
+    b2.onclick = function() { useAsProjectSite(lat, lon, shortName); map.closePopup(); openNOAASite(); };
+    box.appendChild(b2);
+  }
 
   searchMarker.bindPopup(box, {maxWidth: 230}).openPopup();
 
@@ -1863,6 +2220,7 @@ function useAsProjectSite(lat, lon, name) {
   if (lonEl)  lonEl.value  = (+lon).toFixed(5);
   if (addrEl && !addrEl.value) addrEl.value = name;
   T('Site set to ' + (+lat).toFixed(4) + ', ' + (+lon).toFixed(4));
+  siteRainfall();
 }
 
 function doSearch() { var q=document.getElementById('si').value.trim(); if(q) geocodeQuery(q); }
@@ -2124,6 +2482,7 @@ function noaaGridPaste(ev) {
   }
   ev.preventDefault();
   applyNoaaDepths(vals, parseNOAAMeta(txt));
+  appState.noaaSource = 'manual';
 }
 
 /* Load a downloaded NOAA CSV file */
@@ -2134,6 +2493,7 @@ function loadNOAAText(text, fname) {
     return false;
   }
   applyNoaaDepths(vals, parseNOAAMeta(text));
+  appState.noaaSource = 'manual';          // autoFetchNOAA marks its own as 'auto'
   var lbl = document.getElementById('noaa-file-name');
   if (lbl && fname) {
     lbl.textContent = fname;
@@ -2178,7 +2538,15 @@ function pickNOAAFile() {
   var inp = document.getElementById('noaa-file-input');
   if (inp) inp.addEventListener('change', function () { handleNOAAFile(inp.files[0]); });
   var freq = document.getElementById('f-freq');
-  if (freq) freq.addEventListener('change', function () { readNoaaInputs(); });
+  if (freq) freq.addEventListener('change', function () {
+    readNoaaInputs();
+    // fetched rainfall follows the design frequency, typed rainfall does not
+    if (appState.noaaSource === 'auto') siteRainfall();
+  });
+  ['f-lat', 'f-lon'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('change', function () { siteRainfall(); });
+  });
 })();
 
 
@@ -2598,6 +2966,7 @@ function deleteSelected() {
   } else if (appState.activeScId) {
     var sc = appState.subareas[appState.activeScId];
     if (sc && sc.layer) drawnItems.removeLayer(sc.layer);
+    if (sc && sc.pathLayer) drawnItems.removeLayer(sc.pathLayer);
     delete appState.subareas[appState.activeScId];
     appState.activeScId = null;
   } else { return; }
@@ -2613,6 +2982,10 @@ function onDrawCreated(e) {
   var toolWas  = curTool;            // capture before setTool resets it
   setTool('select');
 
+  if (type === 'polygon' && toolWas === 'grade') {
+    startGradeEdit(layer.getLatLngs()[0]);
+    return;
+  }
   if (type === 'polygon') {
     var latlngs = layer.getLatLngs()[0];
     var area_ac = +(geodesicArea(latlngs) / 4046.86).toFixed(2);
@@ -2874,6 +3247,7 @@ function buildProjectData() {
     savedAt: new Date().toISOString(),
     project: appState.project,
     noaa: appState.noaaDepths,
+    noaaSource: appState.noaaSource || null,
     view: {
       lat: map.getCenter().lat, lng: map.getCenter().lng,
       zoom: map.getZoom(), basemap: curBasemap
@@ -2963,6 +3337,7 @@ function clearProject() {
   appState.activeNodeId = null;
   appState.activeFpId = null;
   appState.noaaDepths = null;
+  appState.noaaSource = null;
   appState.lastHydro  = null;
   appState.nextScNum  = 1;
   appState.nextNodeNum = 1;
@@ -3094,6 +3469,9 @@ function loadProjectText(text, fname) {
       if (el && d8[i] != null) el.value = (+d8[i]).toFixed(3);
     });
     readNoaaInputs();
+    // older files do not say where the rainfall came from, so treat it as
+    // the engineer's and never replace it unasked
+    appState.noaaSource = data.noaaSource === 'auto' ? 'auto' : 'manual';
   }
 
   // geometry: nodes, then flow paths, then subareas
@@ -3125,6 +3503,12 @@ function loadProjectText(text, fname) {
       if (g) appState.terrainPool[g.id] = g;
     });
   }
+  // new layers and edits must not reuse an id or a number from the file
+  Object.keys(appState.terrainPool).forEach(function (id) {
+    var m = /^tl-(\d+)$/.exec(id), g = appState.terrainPool[id];
+    if (m) appState.terrain.nextId = Math.max(appState.terrain.nextId, +m[1] + 1);
+    if (g.edit && g.edit.n) appState.nextEdit = Math.max(appState.nextEdit || 1, g.edit.n + 1);
+  });
 
   if (data.scenarios && typeof scenarioCreate === 'function') {
     appState.scenarios = {};
@@ -4848,6 +5232,45 @@ function detectProxy(cb) {
     .catch(function () { cb(false); });
 }
 
+/* Coarse San Diego County test: the county's bounding box. It catches a
+   site in the wrong state or county, which is what it is for. It is not a
+   boundary check, and the box also covers slivers of Orange, Riverside,
+   Imperial and Baja California. */
+function inSanDiegoCounty(lat, lon) {
+  lat = +lat; lon = +lon;
+  return lat >= 32.53 && lat <= 33.51 && lon >= -117.62 && lon <= -116.08;
+}
+
+function noaaGridHasValues() {
+  return NOAA_IDS.some(function (id) {
+    var el = document.getElementById(id);
+    return el && String(el.value).trim() !== '';
+  });
+}
+
+/* Rainfall follows the project site. Called when the site is set or the
+   design frequency changes. Fetches only with a proxy, only inside the
+   county, and only when the grid is empty or holds an earlier fetch.
+   Rainfall typed or loaded by the engineer is kept. The Auto-fetch button
+   remains the deliberate way to replace it. */
+function siteRainfall() {
+  if (!proxyBase()) return false;
+  var lat = parseFloat((document.getElementById('f-lat') || {}).value);
+  var lon = parseFloat((document.getElementById('f-lon') || {}).value);
+  if (isNaN(lat) || isNaN(lon)) return false;
+  if (!inSanDiegoCounty(lat, lon)) {
+    T('This site is outside San Diego County, so rainfall was not fetched. ' +
+      'HydroRational applies the 2026 County manual only.');
+    return false;
+  }
+  if (noaaGridHasValues() && appState.noaaSource !== 'auto') {
+    T('Rainfall you entered was kept. Use Auto-fetch NOAA Atlas 14 in Options to replace it.');
+    return false;
+  }
+  autoFetchNOAA();
+  return true;
+}
+
 /* NOAA Atlas 14 through the proxy */
 function autoFetchNOAA() {
   var lat = parseFloat((document.getElementById('f-lat') || {}).value);
@@ -4878,6 +5301,7 @@ function autoFetchNOAA() {
         T('The proxy replied but the data could not be read');
         return;
       }
+      appState.noaaSource = 'auto';
       if (fromMap) {
         var la = document.getElementById('f-lat'), lo = document.getElementById('f-lon');
         if (la && !la.value) la.value = lat.toFixed(5);
@@ -4954,7 +5378,16 @@ var CRS_DEFS = {
                '+datum=NAD83 +units=us-ft +no_defs',
   'EPSG:2229': '+proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 ' +
                '+lat_2=34.0333333333333 +x_0=2000000.0001016 +y_0=500000.0001016 ' +
-               '+datum=NAD83 +units=us-ft +no_defs'
+               '+datum=NAD83 +units=us-ft +no_defs',
+  /* NAD83(2011) realisation of zone 6, which newer surveys and lidar
+     tiles declare. At drainage scale it is the same grid as 2230. */
+  'EPSG:6426': '+proj=lcc +lat_0=32.1666666666667 +lon_0=-116.25 ' +
+               '+lat_1=33.8833333333333 +lat_2=32.7833333333333 ' +
+               '+x_0=2000000.0001016 +y_0=500000.0001016 ' +
+               '+datum=NAD83 +units=us-ft +no_defs',
+  /* UTM zone 11 north in metres, the grid USGS 3DEP lidar is delivered in */
+  'EPSG:26911': '+proj=utm +zone=11 +datum=NAD83 +units=m +no_defs',
+  'EPSG:6340':  '+proj=utm +zone=11 +datum=NAD83 +units=m +no_defs'
 };
 var WORKING_CRS = 'EPSG:2230';
 
@@ -5405,7 +5838,7 @@ function gridMeta(g) {
   return { id: g.id, name: g.name, kind: g.kind, crs: g.crs,
            x0: g.x0, y0: g.y0, cell: g.cell,
            ncols: g.ncols, nrows: g.nrows,
-           priority: g.priority, vSrc: g.vSrc };
+           priority: g.priority, vSrc: g.vSrc, edit: g.edit || undefined };
 }
 
 function encodeGrid(g, opts) {
@@ -5447,6 +5880,7 @@ function decodeGrid(o) {
                      ncols: o.ncols, nrows: o.nrows,
                      name: o.name, kind: o.kind, priority: o.priority });
   g.id = o.id; g.vSrc = o.vSrc;
+  if (o.edit) g.edit = o.edit;
   if (o.enc === 'stub') return null;          // caller re-fetches these
   if (o.enc === 'empty' || !o.data) {
     for (var e = 0; e < n; e++) g.z[e] = NaN;
@@ -5463,6 +5897,476 @@ function decodeGrid(o) {
     for (var k = 0; k < n; k++) g.z[k] = f[k];
   }
   return g;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   POINT SOURCES: CAD DRAWINGS AND LIDAR
+   Both end as x, y, z points that go through the same Delaunay TIN
+   as survey points. Nothing here guesses a unit or a datum; what a
+   file declares is reported back so the app can check it against
+   what the engineer selected.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── TIN helpers ─────────────────────────────────────────────── */
+function triEdgeLengths(pts, tri, t) {
+  var a = pts[tri[t]], b = pts[tri[t + 1]], c = pts[tri[t + 2]];
+  return [Math.hypot(a[0] - b[0], a[1] - b[1]),
+          Math.hypot(b[0] - c[0], b[1] - c[1]),
+          Math.hypot(c[0] - a[0], c[1] - a[1])];
+}
+
+/* Median edge length of a triangulation, the yardstick for trimming */
+function medianTriEdge(pts, tri) {
+  var e = [];
+  for (var t = 0; t < tri.length; t += 3) {
+    var l = triEdgeLengths(pts, tri, t);
+    e.push(l[0], l[1], l[2]);
+  }
+  if (!e.length) return 0;
+  e.sort(function (x, y) { return x - y; });
+  return e[Math.floor(e.length / 2)];
+}
+
+/* Drop triangles with any edge longer than maxEdge. A Delaunay TIN
+   always fills the convex hull, so across a concave site edge or a
+   gap between drawings it invents ground. Those triangles are long. */
+function trimTIN(pts, tri, maxEdge) {
+  if (!(maxEdge > 0)) return { triangles: tri, dropped: 0 };
+  var out = [], dropped = 0;
+  for (var t = 0; t < tri.length; t += 3) {
+    var l = triEdgeLengths(pts, tri, t);
+    if (l[0] > maxEdge || l[1] > maxEdge || l[2] > maxEdge) { dropped++; continue; }
+    out.push(tri[t], tri[t + 1], tri[t + 2]);
+  }
+  return { triangles: out, dropped: dropped };
+}
+
+/* Remove repeated x, y. The first elevation found at a location wins,
+   and how many disagreed is counted rather than averaged away. */
+function dedupePoints(pts, tol) {
+  tol = tol || 1e-3;
+  var seen = {}, out = [], conflicts = 0;
+  for (var i = 0; i < pts.length; i++) {
+    var p = pts[i];
+    var k = Math.round(p[0] / tol) + ',' + Math.round(p[1] / tol);
+    if (seen[k] === undefined) { seen[k] = p[2]; out.push(p); }
+    else if (Math.abs(seen[k] - p[2]) > 0.01) conflicts++;
+  }
+  return { points: out, conflicts: conflicts };
+}
+
+/* Add vertices along a polyline so no segment is longer than maxSeg.
+   z is interpolated linearly, which is exact for a contour (constant
+   z) and for a 3D breakline between its vertices. */
+function densifyLine(line, maxSeg) {
+  if (!(maxSeg > 0) || line.length < 2) return line.slice();
+  var out = [line[0]];
+  for (var i = 1; i < line.length; i++) {
+    var a = line[i - 1], b = line[i];
+    var d = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    var n = Math.ceil(d / maxSeg);
+    for (var k = 1; k < n; k++) {
+      var f = k / n;
+      out.push([a[0] + f * (b[0] - a[0]), a[1] + f * (b[1] - a[1]), a[2] + f * (b[2] - a[2])]);
+    }
+    out.push(b);
+  }
+  return out;
+}
+
+/* ── INGEST: DXF ─────────────────────────────────────────────────
+   ASCII DXF only. Reads elevations from POINT, LINE, 3DFACE,
+   LWPOLYLINE (elevation in group 38), and POLYLINE with its VERTEX
+   records: 3D polylines carry z per vertex, 2D polylines carry one
+   elevation on the POLYLINE itself. Entities whose every z is zero are
+   2D linework and are skipped and counted, not read as sea level.
+   Text, blocks and Civil 3D objects are not read. */
+var DXF_INSUNITS = { 1: 'in', 2: 'ft', 3: 'mi', 4: 'mm', 5: 'cm', 6: 'm', 21: 'ft' };
+
+function dxfPairs(text) {
+  var lines = String(text).split(/\r\n|\r|\n/), out = [];
+  for (var i = 0; i + 1 < lines.length; i += 2) {
+    var code = parseInt(lines[i].trim(), 10);
+    if (isNaN(code)) { i -= 1; continue; }            // resync on a stray line
+    out.push([code, lines[i + 1].replace(/\s+$/, '').replace(/^\s+/, '')]);
+  }
+  return out;
+}
+
+function dxfNum(v) { var n = parseFloat(v); return isFinite(n) ? n : 0; }
+
+/* The arbitrary axis algorithm for the one non-trivial case drawings
+   contain in practice, a mirrored object with extrusion (0, 0, -1).
+   Anything tilted is reported as skipped rather than projected. */
+function dxfOCS(ent) {
+  var nx = ent.n[0], ny = ent.n[1], nz = ent.n[2];
+  if (Math.abs(nx) < 1e-9 && Math.abs(ny) < 1e-9) return nz > 0 ? 1 : -1;
+  return 0;
+}
+
+function parseDXFTerrain(text, opts) {
+  opts = opts || {};
+  var res = { points: [], layers: {}, insunits: null, units: null,
+              skippedFlat: 0, skippedTilted: 0, entities: 0, binary: false };
+  if (/^AutoCAD Binary DXF/.test(String(text).slice(0, 22))) { res.binary = true; return res; }
+  var pr = dxfPairs(text), section = null, i = 0;
+
+  function layerOf(name) {
+    var k = name || '0';
+    if (!res.layers[k]) res.layers[k] = { name: k, count: 0, zmin: Infinity, zmax: -Infinity,
+                                          entities: 0, flat: 0, types: {} };
+    return res.layers[k];
+  }
+  function emit(layer, type, verts, isLine) {
+    var L = layerOf(layer);
+    var allZero = verts.every(function (v) { return v[2] === 0; });
+    if (allZero) { L.flat++; res.skippedFlat++; return; }
+    if (isLine && opts.maxSeg) verts = densifyLine(verts, opts.maxSeg);
+    L.entities++; res.entities++;
+    L.types[type] = (L.types[type] || 0) + 1;
+    verts.forEach(function (v) {
+      res.points.push([v[0], v[1], v[2], L.name]);
+      L.count++;
+      if (v[2] < L.zmin) L.zmin = v[2];
+      if (v[2] > L.zmax) L.zmax = v[2];
+    });
+  }
+  function readEntity() {                  // pr[i] is [0, TYPE]
+    var ent = { type: pr[i][1], layer: '0', c: {}, list: [], n: [0, 0, 1] };
+    i++;
+    while (i < pr.length && pr[i][0] !== 0) {
+      var code = pr[i][0], v = pr[i][1];
+      if (code === 8) ent.layer = v;
+      else if (code === 210) ent.n[0] = dxfNum(v);
+      else if (code === 220) ent.n[1] = dxfNum(v);
+      else if (code === 230) ent.n[2] = dxfNum(v);
+      if (ent.c[code] === undefined) ent.c[code] = v;
+      ent.list.push([code, v]);
+      i++;
+    }
+    return ent;
+  }
+  function xyz(ent, cx, cy, cz) {
+    return [dxfNum(ent.c[cx]), dxfNum(ent.c[cy]), dxfNum(ent.c[cz])];
+  }
+
+  while (i < pr.length) {
+    var p = pr[i];
+    if (p[0] === 0 && p[1] === 'SECTION') {
+      section = (pr[i + 1] && pr[i + 1][0] === 2) ? pr[i + 1][1] : null;
+      i += 2; continue;
+    }
+    if (p[0] === 0 && p[1] === 'ENDSEC') { section = null; i++; continue; }
+    if (section === 'HEADER' && p[0] === 9 && p[1] === '$INSUNITS') {
+      if (pr[i + 1] && pr[i + 1][0] === 70) res.insunits = parseInt(pr[i + 1][1], 10);
+      i += 2; continue;
+    }
+    if (section !== 'ENTITIES' || p[0] !== 0) { i++; continue; }
+
+    var ent = readEntity(), t = ent.type;
+    if (t === 'POINT') {
+      emit(ent.layer, t, [xyz(ent, 10, 20, 30)], false);
+    } else if (t === 'LINE') {
+      emit(ent.layer, t, [xyz(ent, 10, 20, 30), xyz(ent, 11, 21, 31)], true);
+    } else if (t === '3DFACE') {
+      var f = [xyz(ent, 10, 20, 30), xyz(ent, 11, 21, 31), xyz(ent, 12, 22, 32), xyz(ent, 13, 23, 33)];
+      if (f[3][0] === f[2][0] && f[3][1] === f[2][1] && f[3][2] === f[2][2]) f.pop();
+      emit(ent.layer, t, f, false);
+    } else if (t === 'LWPOLYLINE') {
+      var o = dxfOCS(ent);
+      if (!o) { res.skippedTilted++; continue; }
+      var elev = dxfNum(ent.c[38]) * o, verts = [], cur = null;
+      ent.list.forEach(function (q) {
+        if (q[0] === 10) { cur = [dxfNum(q[1]) * o, 0, elev]; verts.push(cur); }
+        else if (q[0] === 20 && cur) cur[1] = dxfNum(q[1]);
+      });
+      if ((parseInt(ent.c[70], 10) & 1) && verts.length > 2) verts.push(verts[0].slice());
+      if (verts.length) emit(ent.layer, t, verts, true);
+    } else if (t === 'POLYLINE') {
+      var flags = parseInt(ent.c[70], 10) || 0;
+      var is3d = !!(flags & 8), mesh = !!(flags & 16) || !!(flags & 64);
+      var o2 = is3d || mesh ? 1 : dxfOCS(ent);
+      var pelev = dxfNum(ent.c[30]) * (o2 || 1), vs = [];
+      while (i < pr.length && pr[i][0] === 0 && pr[i][1] === 'VERTEX') {
+        var v = readEntity(), vf = parseInt(v.c[70], 10) || 0;
+        if (vf & 128 && !(vf & 64)) continue;           // polyface face record, no position
+        if (vf & 16) continue;                          // spline frame control point
+        var vx = dxfNum(v.c[10]), vy = dxfNum(v.c[20]);
+        if (is3d || mesh) vs.push([vx, vy, dxfNum(v.c[30])]);
+        else vs.push([vx * (o2 || 1), vy, pelev]);
+      }
+      if (i < pr.length && pr[i][0] === 0 && pr[i][1] === 'SEQEND') readEntity();
+      if (!is3d && !mesh && !o2) { res.skippedTilted++; continue; }
+      if ((flags & 1) && vs.length > 2 && !mesh) vs.push(vs[0].slice());
+      if (vs.length) emit(ent.layer, t, vs, !mesh);
+    }
+  }
+  res.units = DXF_INSUNITS[res.insunits] || null;
+  return res;
+}
+
+/* Pick the points on the chosen layers, ready for the TIN */
+function dxfPointsOnLayers(parsed, layerNames) {
+  var want = {};
+  (layerNames || []).forEach(function (n) { want[n] = true; });
+  var out = [];
+  parsed.points.forEach(function (p) { if (want[p[3]]) out.push([p[0], p[1], p[2]]); });
+  return out;
+}
+
+/* Layers that look like utilities rather than ground. Pipes are drawn
+   in 3D at their inverts, which would cut trenches into the surface. */
+var DXF_NOT_GROUND = /(^|[-_ ])(PIPE|SD|SS|SEW|SEWER|STORM|WATER|WTR|W|GAS|ELEC|UTIL|UTILITY|INV|INVERT|CONDUIT|TEL|FO)([-_ ]|$)/i;
+function dxfDefaultLayers(parsed) {
+  return Object.keys(parsed.layers).filter(function (k) {
+    var L = parsed.layers[k];
+    return L.count > 0 && !DXF_NOT_GROUND.test(k);
+  });
+}
+
+/* ── INGEST: LAS lidar ──────────────────────────────────────────
+   LAS 1.0 to 1.4, point formats 0 to 10. Ground is class 2. When a
+   file carries no class 2 points it is unclassified, and every point
+   is used with a warning, since buildings and trees then sit in the
+   surface. LAZ is compressed and is refused with a pointer to the fix. */
+function parseLASHeader(buf) {
+  var dv = new DataView(buf);
+  if (buf.byteLength < 227) return { error: 'too short to be a LAS file' };
+  var sig = String.fromCharCode(dv.getUint8(0), dv.getUint8(1), dv.getUint8(2), dv.getUint8(3));
+  if (sig !== 'LASF') return { error: 'not a LAS file' };
+  var h = {
+    major: dv.getUint8(24), minor: dv.getUint8(25),
+    headerSize: dv.getUint16(94, true), offset: dv.getUint32(96, true),
+    nvlr: dv.getUint32(100, true), formatRaw: dv.getUint8(104),
+    recLen: dv.getUint16(105, true), count: dv.getUint32(107, true),
+    scale: [dv.getFloat64(131, true), dv.getFloat64(139, true), dv.getFloat64(147, true)],
+    off: [dv.getFloat64(155, true), dv.getFloat64(163, true), dv.getFloat64(171, true)],
+    max: [dv.getFloat64(179, true), dv.getFloat64(195, true), dv.getFloat64(211, true)],
+    min: [dv.getFloat64(187, true), dv.getFloat64(203, true), dv.getFloat64(219, true)]
+  };
+  h.compressed = !!(h.formatRaw & 0xC0);
+  h.format = h.formatRaw & 0x3F;
+  if (h.minor >= 4 && buf.byteLength >= 255 && h.headerSize >= 375) {
+    var big = dv.getUint32(247, true) + dv.getUint32(251, true) * 4294967296;
+    if (big > 0) h.count = big;
+  }
+  return h;
+}
+
+/* The whole KEY[...] block from a WKT string, brackets matched */
+function wktBlock(w, key) {
+  var i = w.indexOf(key + '[');
+  if (i < 0) return null;
+  var depth = 0;
+  for (var j = i + key.length; j < w.length; j++) {
+    if (w[j] === '[') depth++;
+    else if (w[j] === ']') { depth--; if (!depth) return w.slice(i, j + 1); }
+  }
+  return null;
+}
+
+/* The CRS and vertical unit the file declares, from its GeoKey or WKT
+   record. Returned as found; the app decides what to do with it. */
+var GEO_VUNITS = { 9001: 'm', 9002: 'ft', 9003: 'ft' };
+function lasGeoref(buf, h) {
+  var dv = new DataView(buf), pos = h.headerSize, out = { epsg: null, vUnits: null, hUnits: null, wkt: null };
+  for (var k = 0; k < h.nvlr && pos + 54 <= buf.byteLength; k++) {
+    var uid = '';
+    for (var j = 0; j < 16; j++) { var ch = dv.getUint8(pos + 2 + j); if (ch) uid += String.fromCharCode(ch); }
+    var rid = dv.getUint16(pos + 18, true), len = dv.getUint16(pos + 20, true), body = pos + 54;
+    if (uid === 'LASF_Projection' && rid === 34735 && body + 8 <= buf.byteLength) {
+      var nkeys = dv.getUint16(body + 6, true);
+      for (var q = 0; q < nkeys; q++) {
+        var e = body + 8 + q * 8;
+        if (e + 8 > buf.byteLength) break;
+        var id = dv.getUint16(e, true), loc = dv.getUint16(e + 2, true), val = dv.getUint16(e + 6, true);
+        if (loc !== 0) continue;
+        if (id === 3072) out.epsg = 'EPSG:' + val;
+        else if (id === 4099) out.vUnits = GEO_VUNITS[val] || null;
+        else if (id === 3076) out.hUnits = GEO_VUNITS[val] || null;
+      }
+    } else if (uid === 'LASF_Projection' && rid === 2112) {
+      var w = '';
+      for (var b = 0; b < len && body + b < buf.byteLength; b++) {
+        var c = dv.getUint8(body + b); if (c) w += String.fromCharCode(c);
+      }
+      out.wkt = w;
+      var pj = wktBlock(w, 'PROJCS') || wktBlock(w, 'PROJCRS');
+      var pe = pj && pj.match(/(?:AUTHORITY|ID)\["EPSG",\s*"?(\d+)"?\]\]\s*$/);
+      if (pe) out.epsg = 'EPSG:' + pe[1];
+      var vb = wktBlock(w, 'VERT_CS') || wktBlock(w, 'VERTCRS');
+      var vu = vb && vb.match(/(?:UNIT|LENGTHUNIT)\["([^"]+)"/);
+      if (vu) out.vUnits = /met/i.test(vu[1]) ? 'm' : (/f(oo|ee)t/i.test(vu[1]) ? 'ft' : null);
+    }
+    pos = body + len;
+  }
+  return out;
+}
+
+function parseLAS(buf, opts) {
+  opts = opts || {};
+  var h = parseLASHeader(buf);
+  if (h.error) return { error: h.error };
+  if (h.compressed) return { error: 'compressed (LAZ)', header: h };
+  if (h.format > 10) return { error: 'point format ' + h.format + ' is not a LAS format', header: h };
+  var dv = new DataView(buf), classAt = h.format >= 6 ? 16 : 15;
+  var n = Math.min(h.count, Math.floor((buf.byteLength - h.offset) / h.recLen));
+  var cls = {}, ground = [], all = [], want = opts.classes || [2];
+  var wantSet = {}; want.forEach(function (c) { wantSet[c] = true; });
+  var step = Math.max(1, opts.stride || 1);
+  for (var k = 0; k < n; k++) {
+    var p = h.offset + k * h.recLen;
+    var cl = dv.getUint8(p + classAt);
+    if (h.format < 6) cl = cl & 31;
+    cls[cl] = (cls[cl] || 0) + 1;
+    if (k % step) continue;
+    var x = dv.getInt32(p, true) * h.scale[0] + h.off[0];
+    var y = dv.getInt32(p + 4, true) * h.scale[1] + h.off[1];
+    var z = dv.getInt32(p + 8, true) * h.scale[2] + h.off[2];
+    if (wantSet[cl]) ground.push([x, y, z]);
+    else if (cl !== 7 && cl !== 18) all.push([x, y, z]);  // keep noise out of the fallback
+  }
+  var unclassified = !ground.length;
+  return { header: h, georef: lasGeoref(buf, h), classes: cls, read: n,
+           points: unclassified ? all : ground, unclassified: unclassified };
+}
+
+/* Thin points to one per bin, the bin mean. Lidar ground runs to many
+   points per square foot; the composite works far coarser than that. */
+function binPoints(pts, cell) {
+  if (!pts.length || !(cell > 0)) return pts;
+  var xmin = Infinity, ymin = Infinity;
+  pts.forEach(function (p) { if (p[0] < xmin) xmin = p[0]; if (p[1] < ymin) ymin = p[1]; });
+  var bins = {};
+  pts.forEach(function (p) {
+    var k = Math.floor((p[0] - xmin) / cell) + ',' + Math.floor((p[1] - ymin) / cell);
+    var b = bins[k] || (bins[k] = [0, 0, 0, 0]);
+    b[0] += p[0]; b[1] += p[1]; b[2] += p[2]; b[3]++;
+  });
+  return Object.keys(bins).map(function (k) {
+    var b = bins[k]; return [b[0] / b[3], b[1] / b[3], b[2] / b[3]];
+  });
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   GRADING EDITS
+   A pad or basin drawn in the app, or a footprint raised or lowered,
+   becomes its own layer on top of the stack. The layers underneath
+   are never written to; removing the edit layer restores them.
+
+   A pad sits at one elevation inside its outline and daylights to
+   the ground at H:1 outside it. Per cell outside the outline, at a
+   distance d from it, the slope surfaces are elev - d/H (fill) and
+   elev + d/H (cut). Ground above the cut surface is cut down to it,
+   ground below the fill surface is filled up to it, and ground in
+   between is untouched. That one rule covers fill pads, cut basins
+   and pads that are part cut and part fill. Corners come out rounded,
+   as a daylight offset from a polygon does.
+   ═══════════════════════════════════════════════════════════════ */
+function pointInPolyXY(x, y, ring) {
+  var inside = false;
+  for (var i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    var xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1];
+    if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) inside = !inside;
+  }
+  return inside;
+}
+
+function distToRingXY(x, y, ring) {
+  var best = Infinity;
+  for (var i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    var ax = ring[j][0], ay = ring[j][1], bx = ring[i][0], by = ring[i][1];
+    var dx = bx - ax, dy = by - ay, L2 = dx * dx + dy * dy;
+    var t = L2 > 0 ? ((x - ax) * dx + (y - ay) * dy) / L2 : 0;
+    t = Math.max(0, Math.min(1, t));
+    var ex = ax + t * dx - x, ey = ay + t * dy - y, d = ex * ex + ey * ey;
+    if (d < best) best = d;
+  }
+  return Math.sqrt(best);
+}
+
+/* base: a grid in the working CRS (the composite). ring: [[x, y]] in
+   the same CRS. spec: { mode: 'pad' | 'offset', elev, delta, slope }.
+   Returns { grid, cut, fill, changed, footprint } with volumes in
+   cubic feet and the footprint in square feet, or null when the
+   outline misses the base entirely. */
+function gradeEdit(base, ring, spec) {
+  if (!ring || ring.length < 3) return null;
+  var mode = spec.mode === 'offset' ? 'offset' : 'pad';
+  var H = Math.max(0, +spec.slope || 0), elev = +spec.elev, delta = +spec.delta || 0;
+  if (mode === 'pad' && !isFinite(elev)) return null;
+
+  var rx0 = Infinity, rx1 = -Infinity, ry0 = Infinity, ry1 = -Infinity;
+  ring.forEach(function (p) {
+    if (p[0] < rx0) rx0 = p[0]; if (p[0] > rx1) rx1 = p[0];
+    if (p[1] < ry0) ry0 = p[1]; if (p[1] > ry1) ry1 = p[1];
+  });
+  // how far a slope can run: the full relief of the base at H:1
+  var reach = 0;
+  if (mode === 'pad' && H > 0) {
+    var zmn = Infinity, zmx = -Infinity;
+    for (var q = 0; q < base.z.length; q++) {
+      var vq = base.z[q]; if (isNaN(vq)) continue;
+      if (vq < zmn) zmn = vq; if (vq > zmx) zmx = vq;
+    }
+    if (isFinite(zmn)) reach = H * Math.max(Math.abs(elev - zmn), Math.abs(elev - zmx));
+  }
+  var cell = base.cell, top = base.y0 + base.nrows * base.cell;
+  var c0 = Math.max(0, Math.floor((rx0 - reach - base.x0) / cell) - 1);
+  var c1 = Math.min(base.ncols - 1, Math.ceil((rx1 + reach - base.x0) / cell) + 1);
+  var r0 = Math.max(0, Math.floor((top - (ry1 + reach)) / cell) - 1);
+  var r1 = Math.min(base.nrows - 1, Math.ceil((top - (ry0 - reach)) / cell) + 1);
+  if (c1 < c0 || r1 < r0) return null;
+
+  var ncols = c1 - c0 + 1, nrows = r1 - r0 + 1;
+  var g = makeGrid({ crs: base.crs, x0: base.x0 + c0 * cell,
+                     y0: top - (r1 + 1) * cell, cell: cell,
+                     ncols: ncols, nrows: nrows, name: 'grading edit', kind: 'edit' });
+  var changed = new Uint8Array(ncols * nrows);
+  var cut = 0, fill = 0, nChanged = 0, inside = 0, a = cell * cell;
+  for (var r = 0; r < nrows; r++) {
+    for (var c = 0; c < ncols; c++) {
+      var k = r * ncols + c;
+      var zb = base.z[(r + r0) * base.ncols + (c + c0)];
+      var p = cellCentre(g, r, c), zn = zb;
+      var isIn = pointInPolyXY(p.x, p.y, ring);
+      if (isIn) {
+        inside++;
+        zn = mode === 'pad' ? elev : (isNaN(zb) ? NaN : zb + delta);
+      } else if (mode === 'pad' && !isNaN(zb)) {
+        if (H > 0) {
+          var d = distToRingXY(p.x, p.y, ring);
+          var up = elev + d / H, dn = elev - d / H;
+          if (zb > up) zn = up; else if (zb < dn) zn = dn;
+        }
+      }
+      g.z[k] = zn;
+      if (!isNaN(zn) && (isNaN(zb) || Math.abs(zn - zb) > 1e-6)) {
+        changed[k] = 1; nChanged++;
+        if (!isNaN(zb)) { if (zn > zb) fill += (zn - zb) * a; else cut += (zb - zn) * a; }
+      }
+    }
+  }
+  if (!inside && !nChanged) return null;
+  // keep the changed cells and a one cell margin of untouched ground, so
+  // the bilinear sampler has neighbours at the edge; blank the rest
+  for (var r2 = 0; r2 < nrows; r2++) {
+    for (var c2 = 0; c2 < ncols; c2++) {
+      var k2 = r2 * ncols + c2;
+      if (changed[k2]) continue;
+      var near = false;
+      for (var dr = -1; dr <= 1 && !near; dr++) {
+        for (var dc = -1; dc <= 1; dc++) {
+          var rr = r2 + dr, cc = c2 + dc;
+          if (rr >= 0 && rr < nrows && cc >= 0 && cc < ncols && changed[rr * ncols + cc]) { near = true; break; }
+        }
+      }
+      if (!near) g.z[k2] = NaN;
+    }
+  }
+  return { grid: g, cut: cut, fill: fill, changed: nChanged, footprint: inside * a };
 }
 /* ===== END terrain-core ===== */
 /* ===== BEGIN flow-core (generated from src/flow-core.js, do not edit here) ===== */
@@ -6022,16 +6926,43 @@ function terrainRange(g) {
 }
 
 /* ── COMPOSITE ─────────────────────────────────────────────────── */
+/* A layer's extent and cell in the working CRS. A survey in zone 5, a
+   lidar tile in UTM metres, or points in lat, long all have to be
+   brought into zone 6 feet before they can share one target grid.
+   Their own numbers are not comparable with the working ones. */
+function layerBoundsWorking(g) {
+  var gb = gridBounds(g);
+  if (g.crs === appState.terrain.crs || !window.proj4) return gb;
+  var out = { xmin: Infinity, ymin: Infinity, xmax: -Infinity, ymax: -Infinity };
+  for (var i = 0; i <= 4; i++) {
+    for (var j = 0; j <= 4; j++) {
+      if (i > 0 && i < 4 && j > 0 && j < 4) continue;          // the edge is enough
+      var x = gb.xmin + (gb.xmax - gb.xmin) * i / 4, y = gb.ymin + (gb.ymax - gb.ymin) * j / 4;
+      var p = window.proj4(g.crs, appState.terrain.crs, [x, y]);
+      if (p[0] < out.xmin) out.xmin = p[0]; if (p[0] > out.xmax) out.xmax = p[0];
+      if (p[1] < out.ymin) out.ymin = p[1]; if (p[1] > out.ymax) out.ymax = p[1];
+    }
+  }
+  return out;
+}
+function layerCellWorking(g) {
+  if (g.crs === appState.terrain.crs || !window.proj4) return g.cell;
+  var b = gridBounds(g), cx = (b.xmin + b.xmax) / 2, cy = (b.ymin + b.ymax) / 2;
+  var a = window.proj4(g.crs, appState.terrain.crs, [cx, cy]);
+  var c = window.proj4(g.crs, appState.terrain.crs, [cx + g.cell, cy]);
+  return Math.hypot(c[0] - a[0], c[1] - a[1]);
+}
+
 function rebuildComposite() {
   var L = appState.terrain.layers;
   if (!L.length) { appState.terrain.comp = null; appState.terrain.target = null; updateTerrainPanel(); return; }
   var b = null;
   L.forEach(function (g) {
-    var gb = gridBounds(g);
+    var gb = layerBoundsWorking(g);
     b = b ? { xmin: Math.min(b.xmin, gb.xmin), ymin: Math.min(b.ymin, gb.ymin),
               xmax: Math.max(b.xmax, gb.xmax), ymax: Math.max(b.ymax, gb.ymax) } : gb;
   });
-  var finest = Math.min.apply(null, L.map(function (g) { return g.cell; }));
+  var finest = Math.min.apply(null, L.map(layerCellWorking));
   var span = Math.max(b.xmax - b.xmin, b.ymax - b.ymin);
   var cell = Math.max(finest, span / appState.terrain.maxPx);
   var target = makeTarget(b, cell, appState.terrain.crs);
@@ -6040,9 +6971,13 @@ function rebuildComposite() {
   appState.terrain.cellFt = cell;
 
   // seam between the top two layers where they overlap
+  // the seam is between surveyed surfaces; a grading edit differs from
+  // the ground on purpose, and is not a datum problem
   appState.terrain.seam = null;
-  if (appState.terrain.comp.order.length > 1) {
-    var s = seamStats(appState.terrain.comp, 0, 1);
+  var surf = [];
+  appState.terrain.comp.order.forEach(function (g, k) { if (g.kind !== 'edit') surf.push(k); });
+  if (surf.length > 1) {
+    var s = seamStats(appState.terrain.comp, surf[0], surf[1]);
     if (s && s.overlap > 0) appState.terrain.seam = s;
   }
   if (appState.terrain.contourLayer) drawContourLayer();
@@ -6070,6 +7005,12 @@ function pickTerrainFile() {
   var i = document.getElementById('terrain-file-input');
   if (i) { i.value = ''; i.click(); }
 }
+/* The picker was never connected to the reader, so a chosen surface
+   went nowhere. Wired here, once, like the other file inputs. */
+(function () {
+  var i = document.getElementById('terrain-file-input');
+  if (i) i.addEventListener('change', function () { handleTerrainFile(i.files[0]); });
+})();
 
 function handleTerrainFile(file) {
   if (!file) return;
@@ -6092,6 +7033,7 @@ function handleTerrainFile(file) {
                   geoKeys: img.getGeoKeys(), data: ras[0]
                 }, opts);
                 if (!g) { T('That GeoTIFF is not a square pixel elevation raster.'); return; }
+                g.vSrc = vSrcLabel(opts.vUnits);
                 acceptTerrainLayer(g, file.name);
               });
             })
@@ -6101,38 +7043,196 @@ function handleTerrainFile(file) {
       });
       return;
     }
+    if (/\.laz$/.test(low)) {
+      T(file.name + ' is compressed LAZ. Decompress it to LAS first (laszip or PDAL), then load the .las file.');
+      return;
+    }
+    if (/\.las$/.test(low)) {
+      var rl = new FileReader();
+      rl.onload = function () { loadLASTerrain(rl.result, file.name, opts); };
+      rl.readAsArrayBuffer(file);
+      return;
+    }
     var rd2 = new FileReader();
     rd2.onload = function () {
       var txt = String(rd2.result);
+      if (/\.dxf$/.test(low) || /^\s*0\s*[\r\n]+\s*SECTION/.test(txt.slice(0, 64)) ||
+          /^AutoCAD Binary DXF/.test(txt.slice(0, 22))) {
+        loadDXFTerrain(txt, file.name, opts);
+        return;
+      }
       if (/^\s*ncols/i.test(txt)) {
         var g = gridFromAscii(txt, opts);
         if (!g) { T('Could not read that ASCII grid.'); return; }
+        g.vSrc = vSrcLabel(opts.vUnits);
         acceptTerrainLayer(g, file.name);
         return;
       }
       var pts = parseXYZPoints(txt);
       if (pts.length < 3) { T('No usable x,y,z points in that file.'); return; }
-      loadScript(CDN_DELAUNATOR, 'Delaunator', function (ok3) {
-        if (!ok3) { T('Could not load the triangulation library.'); return; }
-        var coords = new Float64Array(pts.length * 2);
-        for (var i = 0; i < pts.length; i++) { coords[2*i] = pts[i][0]; coords[2*i+1] = pts[i][1]; }
-        var d = new window.Delaunator(coords);
-        var xs = pts.map(function (p) { return p[0]; }), ys = pts.map(function (p) { return p[1]; });
-        var b = { xmin: Math.min.apply(null, xs), xmax: Math.max.apply(null, xs),
-                  ymin: Math.min.apply(null, ys), ymax: Math.max.apply(null, ys) };
-        var span = Math.max(b.xmax - b.xmin, b.ymax - b.ymin);
-        var cell = Math.max(1, span / 600);
-        var tgt = makeTarget(b, cell, opts.crs || appState.terrain.crs);
-        var z = rasterizeTIN(pts, d.triangles, tgt, opts);
-        tgt.z = z; tgt.name = file.name; tgt.kind = 'xyz'; tgt.priority = opts.priority;
-        acceptTerrainLayer(tgt, file.name + ' (' + pts.length + ' points)');
-      });
+      gridFromPoints(pts, opts, { name: file.name, kind: 'xyz',
+                                  label: file.name + ' (' + pts.length + ' points)' });
     };
     rd2.readAsText(file);
   });
 }
 
 var CDN_DELAUNATOR = 'https://cdn.jsdelivr.net/npm/delaunator@5.0.1/delaunator.min.js';
+
+function crsUnit(crs) {
+  if (crs === 'EPSG:4326') return 'deg';
+  return /\+units=m\b/.test(CRS_DEFS[crs] || '') ? 'm' : 'ft';
+}
+function vSrcLabel(vUnits) { return vUnits === 'm' ? 'converted to feet' : 'feet as supplied'; }
+
+/* Points to a raster through a Delaunay TIN. Shared by x,y,z text, CAD
+   drawings and lidar. spec: { name, kind, label, cell, trim, notes }.
+   trim is a multiple of the median edge beyond which triangles are
+   dropped; 0 keeps the whole hull. */
+function gridFromPoints(pts, opts, spec, done) {
+  loadScript(CDN_DELAUNATOR, 'Delaunator', function (ok) {
+    if (!ok) { T('Could not load the triangulation library.'); if (done) done(null); return; }
+    var dd = dedupePoints(pts);
+    pts = dd.points;
+    if (pts.length < 3) { T('Fewer than three distinct points, so there is no surface to make.'); if (done) done(null); return; }
+    var coords = new Float64Array(pts.length * 2);
+    var b = { xmin: Infinity, xmax: -Infinity, ymin: Infinity, ymax: -Infinity };
+    for (var i = 0; i < pts.length; i++) {
+      var x = pts[i][0], y = pts[i][1];
+      coords[2 * i] = x; coords[2 * i + 1] = y;
+      if (x < b.xmin) b.xmin = x; if (x > b.xmax) b.xmax = x;
+      if (y < b.ymin) b.ymin = y; if (y > b.ymax) b.ymax = y;
+    }
+    var d = new window.Delaunator(coords);
+    var tri = d.triangles, dropped = 0;
+    if (spec.trim > 0) {
+      var tr = trimTIN(pts, tri, spec.trim * medianTriEdge(pts, tri));
+      tri = tr.triangles; dropped = tr.dropped;
+    }
+    var span = Math.max(b.xmax - b.xmin, b.ymax - b.ymin);
+    var cell = spec.cell || Math.max(crsUnit(opts.crs) === 'm' ? 0.3048 : 1, span / 600);
+    if (crsUnit(opts.crs) === 'deg') cell = spec.cell || span / 600;
+    var tgt = makeTarget(b, cell, opts.crs || appState.terrain.crs);
+    tgt.z = rasterizeTIN(pts, tri, tgt, opts);
+    tgt.name = spec.name; tgt.kind = spec.kind; tgt.priority = opts.priority;
+    tgt.vSrc = vSrcLabel(opts.vUnits);
+    tgt.tin = { points: pts.length, triangles: tri.length / 3, trimmed: dropped,
+                conflicts: dd.conflicts };
+    var notes = (spec.notes || []).slice();
+    if (dropped) notes.push(dropped + ' long hull triangles trimmed');
+    if (dd.conflicts) notes.push(dd.conflicts + ' repeated points with different elevations, first kept');
+    acceptTerrainLayer(tgt, spec.label || spec.name, notes);
+    if (done) done(tgt);
+  });
+}
+
+/* ── CAD DRAWINGS ──────────────────────────────────────────────── */
+appState.dxfPending = null;
+
+function loadDXFTerrain(txt, name, opts) {
+  var maxSeg = crsUnit(opts.crs) === 'deg' ? 0 : (crsUnit(opts.crs) === 'm' ? 7.5 : 25);
+  var P = parseDXFTerrain(txt, { maxSeg: maxSeg });
+  if (P.binary) { T('That is a binary DXF. Save it from CAD as ASCII DXF and load it again.'); return; }
+  var layers = Object.keys(P.layers).filter(function (k) { return P.layers[k].count > 0; });
+  if (!layers.length) {
+    T('No elevations in ' + name + '. Everything is drawn at zero' +
+      (P.skippedFlat ? ' (' + P.skippedFlat + ' flat objects)' : '') +
+      '. Contours need their elevation set in CAD, and Civil 3D surfaces need exporting as 3D faces or points.');
+    return;
+  }
+  appState.dxfPending = { parsed: P, name: name, opts: opts };
+  showDXFPicker();
+}
+
+function showDXFPicker() {
+  var pend = appState.dxfPending, el = document.getElementById('dxf-pick');
+  if (!el) return;
+  if (!pend) { el.style.display = 'none'; el.innerHTML = ''; return; }
+  var P = pend.parsed, def = dxfDefaultLayers(P);
+  var names = Object.keys(P.layers).filter(function (k) { return P.layers[k].count > 0; }).sort();
+  var warn = '';
+  if (P.units && P.units !== (pend.opts.vUnits === 'm' ? 'm' : 'ft')) {
+    warn = '<div style="color:var(--red);font-size:9px;margin:3px 0">The drawing declares ' + P.units +
+           ' but the panel says ' + (pend.opts.vUnits === 'm' ? 'metres' : 'feet') + '. Check before building.</div>';
+  }
+  el.innerHTML =
+    '<div style="font-size:10px;color:var(--t2);font-weight:600">' + escapeHtml(pend.name) + '</div>' +
+    '<div style="font-size:9px;color:var(--t4);line-height:1.5;margin:2px 0 4px">Choose the layers that are ground. ' +
+    'Pipes and structures drawn in 3D would cut into the surface, so utility layers start unticked.' +
+    (P.skippedFlat ? ' ' + P.skippedFlat + ' flat 2D objects were ignored.' : '') +
+    (P.skippedTilted ? ' ' + P.skippedTilted + ' tilted objects were skipped.' : '') + '</div>' + warn +
+    names.map(function (k) {
+      var L = P.layers[k];
+      var types = Object.keys(L.types).join(', ');
+      return '<label style="display:flex;gap:6px;align-items:flex-start;font-size:10px;margin:2px 0;cursor:pointer">' +
+        '<input type="checkbox" class="dxf-lyr" value="' + escapeHtml(k) + '"' + (def.indexOf(k) >= 0 ? ' checked' : '') + '>' +
+        '<span style="flex:1"><span style="color:var(--t2)">' + escapeHtml(k) + '</span><br>' +
+        '<span style="color:var(--t4);font-family:JetBrains Mono,monospace;font-size:9px">' +
+        L.count + ' pts, ' + L.zmin.toFixed(1) + ' to ' + L.zmax.toFixed(1) + ', ' + types + '</span></span></label>';
+    }).join('') +
+    '<div class="f2" style="margin-top:5px"><button class="btn-p" onclick="buildDXFSurface()">Build surface</button>' +
+    '<button class="btn-s" onclick="cancelDXF()">Cancel</button></div>';
+  el.style.display = 'block';
+}
+
+function cancelDXF() { appState.dxfPending = null; showDXFPicker(); }
+
+function buildDXFSurface() {
+  var pend = appState.dxfPending;
+  if (!pend) return;
+  var chosen = Array.prototype.slice.call(document.querySelectorAll('#dxf-pick .dxf-lyr'))
+    .filter(function (c) { return c.checked; }).map(function (c) { return c.value; });
+  if (!chosen.length) { T('Tick at least one layer'); return; }
+  var pts = dxfPointsOnLayers(pend.parsed, chosen);
+  if (pts.length < 3) { T('Those layers hold fewer than three points'); return; }
+  appState.dxfPending = null;
+  showDXFPicker();
+  gridFromPoints(pts, pend.opts, {
+    name: pend.name, kind: 'dxf', trim: 20,
+    label: pend.name + ' (' + chosen.length + ' layer' + (chosen.length === 1 ? '' : 's') + ', ' + pts.length + ' points)',
+    notes: pend.parsed.units ? ['drawing units ' + pend.parsed.units] : []
+  });
+}
+
+/* ── LIDAR ─────────────────────────────────────────────────────── */
+function loadLASTerrain(buf, name, opts) {
+  var R = parseLAS(buf);
+  if (R.error) {
+    T(R.error === 'compressed (LAZ)'
+      ? name + ' is compressed LAZ. Decompress it to LAS first (laszip or PDAL).'
+      : 'Could not read ' + name + ': ' + R.error + '.');
+    return;
+  }
+  if (R.points.length < 3) { T('No usable ground points in ' + name); return; }
+  var notes = [], o = {};
+  for (var k in opts) o[k] = opts[k];
+  var geo = R.georef;
+  if (geo.epsg && CRS_DEFS[geo.epsg]) {
+    if (geo.epsg !== opts.crs) notes.push('CRS ' + geo.epsg + ' from the file, not the panel selection');
+    o.crs = geo.epsg;
+    if (window.proj4) registerCRS(window.proj4);
+  } else if (geo.epsg) {
+    notes.push('the file declares ' + geo.epsg + ', which this app does not know; read as ' + opts.crs);
+  }
+  if (geo.vUnits && geo.vUnits !== opts.vUnits) {
+    notes.push('elevations in ' + (geo.vUnits === 'm' ? 'metres' : 'feet') + ' per the file');
+    o.vUnits = geo.vUnits;
+  }
+  if (R.unclassified) notes.push('no ground class in this file, so buildings and trees are in the surface');
+  // extent from the points themselves; headers are not always filled in
+  var bx0 = Infinity, bx1 = -Infinity, by0 = Infinity, by1 = -Infinity;
+  R.points.forEach(function (p) {
+    if (p[0] < bx0) bx0 = p[0]; if (p[0] > bx1) bx1 = p[0];
+    if (p[1] < by0) by0 = p[1]; if (p[1] > by1) by1 = p[1];
+  });
+  var area = Math.max(1e-9, (bx1 - bx0) * (by1 - by0));
+  var span = Math.max(bx1 - bx0, by1 - by0);
+  var minCell = crsUnit(o.crs) === 'm' ? 0.3048 : 1;
+  var cell = Math.max(minCell, Math.sqrt(area / R.points.length), span / 800);
+  var binned = binPoints(R.points, cell);
+  var label = name + ' (' + R.points.length + (R.unclassified ? ' points' : ' ground points') + ')';
+  gridFromPoints(binned, o, { name: name, kind: 'las', trim: 20, cell: cell, label: label, notes: notes });
+}
 
 /* What cannot be guessed has to be asked */
 function terrainImportOptions(name) {
@@ -6145,24 +7245,38 @@ function terrainImportOptions(name) {
   };
 }
 
-function acceptTerrainLayer(g, label) {
+/* Corners of a grid as lat, lng, in the grid's own CRS */
+function gridLatLngBounds(g) {
+  var b = gridBounds(g);
+  var f = function (x, y) { var p = window.proj4(g.crs, 'EPSG:4326', [x, y]); return [p[1], p[0]]; };
+  return [f(b.xmin, b.ymin), f(b.xmax, b.ymax)];
+}
+
+function acceptTerrainLayer(g, label, notes) {
   g.id = 'tl-' + appState.terrain.nextId++;
   g.name = label;
-  g.vSrc = (g.vUnits === 'ft') ? 'feet as supplied' : 'converted to feet';
+  g.vSrc = g.vSrc || ((g.vUnits === 'ft') ? 'feet as supplied' : 'converted to feet');
   appState.terrain.layers.push(g);
   appState.terrainPool[g.id] = g;
   rebuildComposite();
-  var b = gridBounds(g);
+  var outside = false;
   try {
-    var sw = toLatLngXY(b.xmin, b.ymin), ne = toLatLngXY(b.xmax, b.ymax);
-    map.fitBounds([sw, ne], { padding: [30, 30] });
+    var bb = gridLatLngBounds(g);
+    map.fitBounds(bb, { padding: [30, 30] });
+    var cLat = (bb[0][0] + bb[1][0]) / 2, cLng = (bb[0][1] + bb[1][1]) / 2;
+    outside = !inSanDiegoCounty(cLat, cLng);
   } catch (e) {}
   var msg = label + ' loaded, ' + g.ncols + ' by ' + g.nrows + ' at ' + g.cell.toFixed(1) +
-            ' ft, ground ' + terrainRange(g);
+            ' ' + crsUnit(g.crs) + ', ground ' + terrainRange(g);
+  if (notes && notes.length) msg += '. ' + notes.join('; ');
+  if (outside) {
+    msg += '. It lands outside San Diego County, so the coordinate system or the drawing origin is probably wrong';
+  }
   if (appState.terrain.seam) {
     msg += '. Seam against the layer below averages ' +
            appState.terrain.seam.meanAbs.toFixed(2) + ' ft';
   }
+  g.importNotes = (notes || []).concat(outside ? ['outside San Diego County'] : []);
   T(msg);
 }
 
@@ -6176,6 +7290,131 @@ function setTerrainPriority(id, v) {
   if (!g) return;
   g.priority = parseInt(v, 10) || 0;
   rebuildComposite();
+}
+
+/* ── GRADING EDITS ────────────────────────────────────────────────
+   Draw an outline, then either set a pad elevation that daylights to
+   the ground at H:1 (a building pad, or a basin when it is below
+   grade), or raise or lower the footprint by a fixed amount. Each edit
+   is a layer of its own above every surface, so the surveyed and 3DEP
+   layers are never altered and removing the edit restores them. */
+appState.gradePending = null;
+appState.nextEdit = 1;
+
+function startGrade() {
+  if (!compositeGrid()) { T('Load or fetch terrain first. A grading edit is made against existing ground.'); return; }
+  setTool('grade');
+}
+
+function ringToWorking(latlngs) {
+  return latlngs.map(function (ll) { return toWorkingXY(ll.lat !== undefined ? ll.lat : ll[0], ll.lng !== undefined ? ll.lng : ll[1]); });
+}
+
+/* Mean, low and high ground inside an outline, from the composite */
+function groundInside(ring) {
+  var g = compositeGrid(), n = 0, sum = 0, lo = Infinity, hi = -Infinity;
+  if (!g) return null;
+  for (var r = 0; r < g.nrows; r++) {
+    for (var c = 0; c < g.ncols; c++) {
+      var v = g.z[r * g.ncols + c]; if (isNaN(v)) continue;
+      var p = cellCentre(g, r, c);
+      if (!pointInPolyXY(p.x, p.y, ring)) continue;
+      n++; sum += v; if (v < lo) lo = v; if (v > hi) hi = v;
+    }
+  }
+  return n ? { mean: sum / n, lo: lo, hi: hi, cells: n } : null;
+}
+
+function startGradeEdit(latlngs) {
+  var ring = ringToWorking(latlngs);
+  var gi = groundInside(ring);
+  if (!gi) { T('That outline is not over loaded terrain'); return; }
+  appState.gradePending = { latlngs: latlngs.map(function (ll) { return [ll.lat, ll.lng]; }), ring: ring, ground: gi };
+  showGradePicker();
+}
+
+function showGradePicker() {
+  var el = document.getElementById('grade-pick'), pend = appState.gradePending;
+  if (!el) return;
+  if (!pend) { el.style.display = 'none'; el.innerHTML = ''; return; }
+  var gi = pend.ground;
+  el.innerHTML =
+    '<div style="font-size:10px;color:var(--t2);font-weight:600">Grading edit</div>' +
+    '<div style="font-size:9px;color:var(--t4);line-height:1.5;margin:2px 0 4px">Ground inside: ' +
+      gi.lo.toFixed(1) + ' to ' + gi.hi.toFixed(1) + ' ft, mean ' + gi.mean.toFixed(1) + ' ft.</div>' +
+    '<select class="fsel" id="grade-mode" style="font-size:10px;padding:3px 6px;width:100%" onchange="gradeModeChanged()">' +
+      '<option value="pad">Pad or basin at an elevation</option>' +
+      '<option value="offset">Raise or lower the footprint</option></select>' +
+    '<div class="f2" style="margin-top:4px" id="grade-pad-row">' +
+      '<input class="fi fm" id="grade-elev" value="' + gi.mean.toFixed(1) + '" title="Pad elevation, ft" style="font-size:10px;padding:3px 6px"/>' +
+      '<input class="fi fm" id="grade-slope" value="2" title="Daylight slope, H per 1 V. 0 for vertical walls" style="font-size:10px;padding:3px 6px"/></div>' +
+    '<div style="font-size:9px;color:var(--t4)" id="grade-pad-help">Elevation in feet, then side slope H:1 (0 for walls).</div>' +
+    '<div class="f2" style="margin-top:4px;display:none" id="grade-off-row">' +
+      '<input class="fi fm" id="grade-delta" value="1.0" title="Change in feet, negative to lower" style="font-size:10px;padding:3px 6px"/></div>' +
+    '<div class="f2" style="margin-top:5px"><button class="btn-p" onclick="applyGradeEdit()">Apply</button>' +
+    '<button class="btn-s" onclick="cancelGradeEdit()">Cancel</button></div>';
+  el.style.display = 'block';
+}
+
+function gradeModeChanged() {
+  var off = document.getElementById('grade-mode').value === 'offset';
+  document.getElementById('grade-pad-row').style.display = off ? 'none' : '';
+  document.getElementById('grade-pad-help').style.display = off ? 'none' : '';
+  document.getElementById('grade-off-row').style.display = off ? '' : 'none';
+}
+
+function cancelGradeEdit() { appState.gradePending = null; showGradePicker(); }
+
+function fmtCY(cf) { return Math.round(cf / 27).toLocaleString('en-US') + ' cy'; }
+
+function gradeSummary(e) {
+  if (!e) return 'grading edit';
+  var what = e.mode === 'offset'
+    ? (e.delta >= 0 ? 'Raised ' : 'Lowered ') + Math.abs(e.delta).toFixed(2) + ' ft'
+    : 'Pad at ' + (+e.elev).toFixed(2) + ' ft, ' + (e.slope > 0 ? e.slope + ':1 slopes' : 'vertical walls');
+  return what + '. Cut ' + fmtCY(e.cut) + ', fill ' + fmtCY(e.fill) +
+         ', footprint ' + (e.footprint / 43560).toFixed(3) + ' ac';
+}
+
+function applyGradeEdit() {
+  var pend = appState.gradePending;
+  if (!pend) return;
+  var mode = document.getElementById('grade-mode').value;
+  var spec = { mode: mode };
+  if (mode === 'offset') {
+    spec.delta = fieldNumById('grade-delta');
+    if (!isFinite(spec.delta) || spec.delta === 0) { T('Enter a non-zero change in feet'); return; }
+  } else {
+    spec.elev = fieldNumById('grade-elev');
+    spec.slope = fieldNumById('grade-slope');
+    if (!isFinite(spec.elev)) { T('Enter the pad elevation in feet'); return; }
+    if (!isFinite(spec.slope) || spec.slope < 0) { T('Enter the side slope as H per 1 V, or 0 for vertical walls'); return; }
+  }
+  var base = compositeGrid();
+  var res = gradeEdit(base, pend.ring, spec);
+  if (!res || !res.changed) { T('That edit changes nothing on the loaded terrain'); return; }
+  var g = res.grid, n = appState.nextEdit++;
+  g.kind = 'edit';
+  g.priority = 10 + n;                        // above every surface, later edits on top
+  g.vSrc = 'grading edit';
+  g.edit = { n: n, mode: spec.mode, elev: spec.elev, slope: spec.slope, delta: spec.delta,
+             ring: pend.latlngs, cut: res.cut, fill: res.fill, footprint: res.footprint };
+  appState.gradePending = null;
+  showGradePicker();
+  g.id = 'tl-' + appState.terrain.nextId++;
+  g.name = 'Grading edit ' + n;
+  appState.terrain.layers.push(g);
+  appState.terrainPool[g.id] = g;
+  rebuildComposite();
+  T(g.name + ': ' + gradeSummary(g.edit));
+}
+
+/* A typed number that keeps 0 and refuses blanks, as fieldNum does */
+function fieldNumById(id) {
+  var el = document.getElementById(id);
+  if (!el) return NaN;
+  var v = String(el.value).trim();
+  return v === '' ? NaN : Number(v);
 }
 
 /* ── CONTOURS ──────────────────────────────────────────────────── */
@@ -6200,7 +7439,7 @@ function drawContourLayer() {
     var major = Math.abs(c.level % (iv * 5)) < 1e-6;
     c.lines.forEach(function (line) {
       var ll = line.map(function (p) { return toLatLngXY(p[0], p[1]); });
-      L.polyline(ll, { pane: 'paneTerrain', color: '#7a5c3a',
+      L.polyline(ll, { pane: 'paneTerrain', color: '#7a5c3a', contourLevel: c.level,
                        weight: major ? 1.6 : 0.8, opacity: major ? 0.9 : 0.6 })
         .bindTooltip(c.level.toFixed(1) + ' ft', { sticky: true })
         .addTo(grp);
@@ -6384,13 +7623,14 @@ function updateTerrainPanel() {
     h += ordered.map(function (g) {
       return '<div class="si" style="display:block;padding:5px 8px 6px 20px">' +
         '<div style="display:flex;align-items:center;gap:6px">' +
-          '<div class="si-dot" style="background:' + (g.kind === '3dep' ? 'var(--acc)' : 'var(--green)') + '"></div>' +
+          '<div class="si-dot" style="background:' + (g.kind === '3dep' ? 'var(--acc)' : g.kind === 'edit' ? '#1b4f72' : 'var(--green)') + '"></div>' +
           '<span class="si-name" style="flex:1">' + g.name + '</span>' +
           '<span style="cursor:pointer;color:var(--t4);font-size:12px" onclick="removeTerrainLayer(\'' + g.id + '\')">x</span>' +
         '</div>' +
         '<div style="font-size:9px;color:var(--t4);font-family:JetBrains Mono,monospace;margin-top:2px">' +
-          g.ncols + 'x' + g.nrows + ' at ' + g.cell.toFixed(1) + ' ft, ' + g.crs +
-          ', ' + (g.vSrc || 'feet') + ', priority ' + g.priority +
+          (g.kind === 'edit' ? gradeSummary(g.edit) :
+          g.ncols + 'x' + g.nrows + ' at ' + g.cell.toFixed(1) + ' ' + crsUnit(g.crs) + ', ' + g.crs +
+          ', ' + (g.vSrc || 'feet') + ', priority ' + g.priority) +
         '</div></div>';
     }).join('');
     if (appState.terrain.seam) {
@@ -7198,7 +8438,8 @@ function buildDXF(opts) {
     appState.terrain.contourLayer.getLayers().forEach(function (L) {
       var pts = L.getLatLngs().map(toXY);
       pts.forEach(note);
-      body += dxfPolyline('HR-CONTOUR', pts, false, 0);
+      // at their elevation, so the contours are usable as a surface in CAD
+      body += dxfPolyline('HR-CONTOUR', pts, false, L.options.contourLevel || 0);
       counts.contours++;
     });
   }
@@ -7777,6 +9018,184 @@ function showAccount() {
   updateAccountUI();
   renderProjectList();
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   HYDROLOGY MANUAL
+   The 2026 County manual, unaltered, in public/manual/. Page numbers are
+   PDF page indices, not the printed section labels (Table 3-1 is printed
+   on page 3-5, which is PDF page 69). Suite 26 pins them.
+   ═══════════════════════════════════════════════════════════════ */
+var MANUAL_URL = 'manual/San_Diego_County_Hydrology_Manual_2026.pdf';
+var MANUAL_REFS = {
+  'toc':         { page: 2,   label: 'Table of contents' },
+  'sec-1.6':     { page: 56,  label: '1.6 Drainage report requirements' },
+  'sec-2':       { page: 60,  label: '2 Selection of hydrologic method' },
+  'sec-3.1.1':   { page: 65,  label: '3.1.1 Rational method formula' },
+  'sec-3.1.2':   { page: 67,  label: '3.1.2 Runoff coefficient' },
+  'table-3-1':   { page: 69,  label: 'Table 3-1 Runoff coefficients' },
+  'sec-3.1.3':   { page: 70,  label: '3.1.3 Rainfall intensity' },
+  'sec-3.1.4':   { page: 71,  label: '3.1.4 Time of concentration' },
+  'fig-3-1':     { page: 73,  label: 'Figure 3-1 Overland time of flow nomograph' },
+  'table-3-2':   { page: 75,  label: 'Table 3-2 Max overland length and Ti' },
+  'sec-3.1.4.2': { page: 77,  label: '3.1.4.2 Travel time' },
+  'fig-3-4':     { page: 82,  label: 'Figure 3-4 Gutter and roadway velocity' },
+  'fig-3-5':     { page: 83,  label: 'Figure 3-5 Manning nomograph' },
+  'sec-3.2':     { page: 84,  label: '3.2 Developing rational method input' },
+  'sec-3.3':     { page: 86,  label: '3.3 Performing rational method calcs' },
+  'sec-3.4':     { page: 87,  label: '3.4 Modified rational method (junctions)' },
+  'sec-4':       { page: 91,  label: '4 NRCS hydrologic method' },
+  'sec-5':       { page: 151, label: '5 Erosion and sedimentation' },
+  'sec-6':       { page: 191, label: '6 Rational method hydrograph' },
+  'sec-6.2':     { page: 192, label: '6.2 Hydrograph development' },
+  'fig-6-2':     { page: 198, label: 'Figure 6-2 Six hour hydrograph' },
+  'sec-7':       { page: 203, label: '7 Water quality considerations' },
+  'sec-8':       { page: 205, label: '8 References' },
+  'app-a':       { page: 209, label: 'Appendix A Hydrologic soil groups map' },
+  'app-b':       { page: 211, label: 'Appendix B Obtaining rainfall data' },
+  'app-c':       { page: 219, label: 'Appendix C PZN map' },
+  'app-d':       { page: 221, label: 'Appendix D NRCS worksheets' },
+  'workbook':    { page: 225, label: 'Workbook examples' }
+};
+/* The HydroRational user manual. Ours, so no checksum against a source,
+   but suite 27 pins the pages to the file: a revised PDF means re-reading
+   every page below. */
+var USER_MANUAL_URL = 'manual/HydroRational_User_Manual.pdf';
+var USER_MANUAL_REFS = {
+  'about':          { page: 1,  label: '1 About HydroRational' },
+  'screen':         { page: 1,  label: '2 The screen' },
+  'help':           { page: 2,  label: '2 Help and manuals' },
+  'quick-start':    { page: 2,  label: '3 Quick start' },
+  'project-setup':  { page: 3,  label: '4 Project setup (Info tab)' },
+  'rainfall':       { page: 3,  label: '4 Rainfall tab' },
+  'options':        { page: 4,  label: '4 Options tab' },
+  'network':        { page: 5,  label: '5 Building the drainage network' },
+  'subcatchment':   { page: 5,  label: '6 Subcatchment properties' },
+  'nodes':          { page: 7,  label: '7 Nodes, junctions and flow paths' },
+  'junctions':      { page: 7,  label: '7 Junction analysis and Note 3' },
+  'terrain':        { page: 7,  label: '8 Terrain' },
+  'delineation':    { page: 8,  label: '8 Delineating a watershed' },
+  'provenance':     { page: 8,  label: '8 Provenance of terrain values' },
+  'scenarios':      { page: 9,  label: '9 Existing and proposed scenarios' },
+  'basins':         { page: 9,  label: '10 Detention basins' },
+  'running':        { page: 10, label: '11 Running the analysis' },
+  'reports':        { page: 10, label: '12 Reports and exports' },
+  'saving':         { page: 11, label: '13 Saving, accounts and cloud sync' },
+  'reference':      { page: 12, label: '14 Shortcuts, files, references' },
+  'troubleshooting':{ page: 13, label: '15 Troubleshooting and known limits' }
+};
+
+var MANUAL_DOCS = {
+  user:   { url: USER_MANUAL_URL, refs: USER_MANUAL_REFS, home: 'about',
+            title: 'HydroRational user manual' },
+  county: { url: MANUAL_URL, refs: MANUAL_REFS, home: 'toc',
+            title: 'San Diego County Hydrology Manual 2026' }
+};
+var manualDoc = null;                         // document on screen
+var manualLast = { user: null, county: null };  // last key per document
+var manualPage = null;
+
+function manualSrc(page, doc) { return MANUAL_DOCS[doc || 'county'].url + '#page=' + page; }
+
+function showManualDoc(doc, key) {
+  var D = MANUAL_DOCS[doc];
+  if (!key) key = manualLast[doc] || D.home;
+  if (!D.refs[key]) key = D.home;
+  var ref = D.refs[key];
+  var body = document.getElementById('manual-body');
+  // a fresh frame each time: not every PDF viewer follows a hash change,
+  // and the same URL keeps the browser cache in play
+  body.innerHTML = '';
+  var f = document.createElement('iframe');
+  f.id = 'manual-frame';
+  f.title = D.title;
+  f.setAttribute('src', manualSrc(ref.page, doc));
+  body.appendChild(f);
+  if (manualDoc !== doc) fillManualJump(doc);
+  manualDoc = doc; manualLast[doc] = key; manualPage = ref.page;
+  var sel = document.getElementById('manual-jump');
+  if (sel) sel.value = key;
+  var nt = document.getElementById('manual-newtab');
+  if (nt) nt.setAttribute('href', manualSrc(ref.page, doc));
+  ['user', 'county'].forEach(function (d) {
+    var tab = document.getElementById('man-tab-' + d);
+    if (tab) tab.classList.toggle('on', d === doc);
+    var ft = document.getElementById('manual-ft-' + d);
+    if (ft) ft.style.display = d === doc ? '' : 'none';
+  });
+  document.getElementById('manual-panel').style.display = 'flex';
+}
+
+function fillManualJump(doc) {
+  var sel = document.getElementById('manual-jump');
+  if (!sel) return;
+  var refs = MANUAL_DOCS[doc].refs;
+  sel.innerHTML = Object.keys(refs).map(function (k) {
+    return '<option value="' + k + '">' + refs[k].label + ' (p. ' + refs[k].page + ')</option>';
+  }).join('');
+}
+
+function openManual(key)     { showManualDoc('county', MANUAL_REFS[key] ? key : 'toc'); }
+function openUserManual(key) { showManualDoc('user', USER_MANUAL_REFS[key] ? key : 'about'); }
+
+function manualOpen() { return document.getElementById('manual-panel').style.display !== 'none'; }
+
+function closeManual() {
+  // hidden, not unloaded, so the reader's place survives
+  document.getElementById('manual-panel').style.display = 'none';
+}
+
+// Each toolbar button closes its own document, or switches to it.
+function toggleManualDoc(doc) {
+  if (manualOpen() && manualDoc === doc) { closeManual(); return; }
+  if (!manualOpen() && manualDoc === doc) {
+    document.getElementById('manual-panel').style.display = 'flex'; return;
+  }
+  showManualDoc(doc);
+}
+function toggleManual()     { toggleManualDoc('county'); }
+function toggleUserManual() { toggleManualDoc('user'); }
+
+(function initManual() {
+  var sel = document.getElementById('manual-jump');
+  if (sel) sel.addEventListener('change', function () {
+    showManualDoc(manualDoc || 'county', sel.value);
+  });
+  // [data-manual] cites the County manual, [data-guide] the user manual
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('[data-manual],[data-guide]') : null;
+    if (!a) return;
+    e.preventDefault(); e.stopPropagation();
+    if (a.hasAttribute('data-guide')) openUserManual(a.getAttribute('data-guide'));
+    else openManual(a.getAttribute('data-manual'));
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'F1') { e.preventDefault(); openUserManual(manualLast.user || 'about'); return; }
+    if (e.key === 'Escape' && manualOpen()) closeManual();
+  });
+  document.querySelectorAll('[data-manual]').forEach(function (a) {
+    var r = MANUAL_REFS[a.getAttribute('data-manual')];
+    if (r) a.title = 'Open the County manual at ' + r.label;
+  });
+  document.querySelectorAll('[data-guide]').forEach(function (a) {
+    var r = USER_MANUAL_REFS[a.getAttribute('data-guide')];
+    if (r) a.title = 'Open the user manual at ' + r.label;
+  });
+  // drag the left edge to resize; a shield keeps the frame from eating
+  // mouse events mid drag
+  var grip = document.getElementById('manual-grip');
+  if (grip) grip.addEventListener('mousedown', function (e) {
+    e.preventDefault();
+    var p = document.getElementById('manual-panel');
+    var shield = document.createElement('div');
+    shield.style.cssText = 'position:fixed;inset:0;z-index:1600;cursor:col-resize';
+    document.body.appendChild(shield);
+    function mv(ev) { p.style.width = Math.max(320, window.innerWidth - ev.clientX) + 'px'; }
+    function up() { document.removeEventListener('mousemove', mv);
+                    document.removeEventListener('mouseup', up); shield.remove(); }
+    document.addEventListener('mousemove', mv);
+    document.addEventListener('mouseup', up);
+  });
+})();
 
 document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
 initResize('rhl','lp','r');

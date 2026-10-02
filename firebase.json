@@ -14,11 +14,29 @@
     ],
     "headers": [
       {
+        "source": "/",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, max-age=0"
+          }
+        ]
+      },
+      {
         "source": "**/*.html",
         "headers": [
           {
             "key": "Cache-Control",
             "value": "no-cache, max-age=0"
+          }
+        ]
+      },
+      {
+        "source": "/manual/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=86400"
           }
         ]
       }

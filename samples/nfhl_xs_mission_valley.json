@@ -1,0 +1,833 @@
+{
+ "displayFieldName": "WSEL_REG",
+ "fieldAliases": {
+  "XS_LTR": "XS_LTR",
+  "WSEL_REG": "WSEL_REG",
+  "STRMBED_EL": "STRMBED_EL",
+  "WTR_NM": "WTR_NM",
+  "STREAM_STN": "STREAM_STN",
+  "LEN_UNIT": "LEN_UNIT",
+  "V_DATUM": "V_DATUM"
+ },
+ "geometryType": "esriGeometryPolyline",
+ "spatialReference": {
+  "wkid": 4326,
+  "latestWkid": 4326
+ },
+ "fields": [
+  {
+   "name": "XS_LTR",
+   "type": "esriFieldTypeString",
+   "alias": "XS_LTR",
+   "length": 12
+  },
+  {
+   "name": "WSEL_REG",
+   "type": "esriFieldTypeDouble",
+   "alias": "WSEL_REG"
+  },
+  {
+   "name": "STRMBED_EL",
+   "type": "esriFieldTypeDouble",
+   "alias": "STRMBED_EL"
+  },
+  {
+   "name": "WTR_NM",
+   "type": "esriFieldTypeString",
+   "alias": "WTR_NM",
+   "length": 100
+  },
+  {
+   "name": "STREAM_STN",
+   "type": "esriFieldTypeDouble",
+   "alias": "STREAM_STN"
+  },
+  {
+   "name": "LEN_UNIT",
+   "type": "esriFieldTypeString",
+   "alias": "LEN_UNIT",
+   "length": 16
+  },
+  {
+   "name": "V_DATUM",
+   "type": "esriFieldTypeString",
+   "alias": "V_DATUM",
+   "length": 17
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "XS_LTR": "C",
+    "WSEL_REG": 28.8,
+    "STRMBED_EL": 17.2,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 27714.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.167396,
+       32.755531
+      ],
+      [
+       -117.171559,
+       32.767961
+      ],
+      [
+       -117.17196,
+       32.76916
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": "D",
+    "WSEL_REG": 30.7,
+    "STRMBED_EL": 17.3,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 27802.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.167135,
+       32.755608
+      ],
+      [
+       -117.171293,
+       32.768025
+      ],
+      [
+       -117.171702,
+       32.769247
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": "E",
+    "WSEL_REG": 32.3,
+    "STRMBED_EL": 19.2,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 28322.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.166717,
+       32.75934
+      ],
+      [
+       -117.170146,
+       32.769579
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": "F",
+    "WSEL_REG": 32.9,
+    "STRMBED_EL": 19.2,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 28390.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.166513,
+       32.759409
+      ],
+      [
+       -117.169937,
+       32.769633
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": " ",
+    "WSEL_REG": 33.7,
+    "STRMBED_EL": 19.2,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 28912.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.1649,
+       32.759722
+      ],
+      [
+       -117.168319,
+       32.769932
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": "G",
+    "WSEL_REG": 35.1,
+    "STRMBED_EL": 16.2,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 29716.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.163783,
+       32.760013
+      ],
+      [
+       -117.164232,
+       32.765184
+      ],
+      [
+       -117.164614,
+       32.766996
+      ],
+      [
+       -117.165695,
+       32.770869
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": "H",
+    "WSEL_REG": 35.3,
+    "STRMBED_EL": 21.8,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 29813.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.163683,
+       32.76003
+      ],
+      [
+       -117.164016,
+       32.763987
+      ],
+      [
+       -117.163916,
+       32.76525
+      ],
+      [
+       -117.164056,
+       32.765953
+      ],
+      [
+       -117.164398,
+       32.767233
+      ],
+      [
+       -117.164614,
+       32.767651
+      ],
+      [
+       -117.16545,
+       32.770796
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": "I",
+    "WSEL_REG": 36.7,
+    "STRMBED_EL": 23.8,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 30190.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.163601,
+       32.759981
+      ],
+      [
+       -117.163928,
+       32.763807
+      ],
+      [
+       -117.162645,
+       32.768525
+      ],
+      [
+       -117.161993,
+       32.771373
+      ],
+      [
+       -117.162275,
+       32.772895
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": "J",
+    "WSEL_REG": 39.1,
+    "STRMBED_EL": 20.5,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 30691.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.161754,
+       32.758633
+      ],
+      [
+       -117.162188,
+       32.765046
+      ],
+      [
+       -117.161232,
+       32.768851
+      ],
+      [
+       -117.160406,
+       32.772938
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": " ",
+    "WSEL_REG": 39.2,
+    "STRMBED_EL": 23.9,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 31186.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.158792,
+       32.761208
+      ],
+      [
+       -117.159446,
+       32.764226
+      ],
+      [
+       -117.160239,
+       32.767236
+      ],
+      [
+       -117.160422,
+       32.76886
+      ],
+      [
+       -117.160506,
+       32.771684
+      ],
+      [
+       -117.160341,
+       32.772951
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": " ",
+    "WSEL_REG": 39.4,
+    "STRMBED_EL": 23.9,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 31492.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.157316,
+       32.762424
+      ],
+      [
+       -117.159777,
+       32.76919
+      ],
+      [
+       -117.160358,
+       32.771684
+      ],
+      [
+       -117.160292,
+       32.772931
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": " ",
+    "WSEL_REG": 39.8,
+    "STRMBED_EL": 23.8,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 32264.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.155343,
+       32.763307
+      ],
+      [
+       -117.158938,
+       32.774295
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": "K",
+    "WSEL_REG": 40.1,
+    "STRMBED_EL": 17.9,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 33031.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.152123,
+       32.763462
+      ],
+      [
+       -117.152464,
+       32.764267
+      ],
+      [
+       -117.152888,
+       32.765235
+      ],
+      [
+       -117.15325,
+       32.766045
+      ],
+      [
+       -117.154193,
+       32.76812
+      ],
+      [
+       -117.154694,
+       32.769199
+      ],
+      [
+       -117.155173,
+       32.770726
+      ],
+      [
+       -117.156159,
+       32.772543
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": "L",
+    "WSEL_REG": 40.3,
+    "STRMBED_EL": 22.7,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 33244.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.151689,
+       32.763578
+      ],
+      [
+       -117.151839,
+       32.763949
+      ],
+      [
+       -117.154034,
+       32.769461
+      ],
+      [
+       -117.154684,
+       32.771273
+      ],
+      [
+       -117.155024,
+       32.772036
+      ],
+      [
+       -117.155525,
+       32.773138
+      ],
+      [
+       -117.156131,
+       32.774457
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": " ",
+    "WSEL_REG": 40.7,
+    "STRMBED_EL": 23.7,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 33982.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.149995,
+       32.764574
+      ],
+      [
+       -117.153826,
+       32.7764
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": " ",
+    "WSEL_REG": 41.6,
+    "STRMBED_EL": 23.7,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 35235.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.146806,
+       32.765217
+      ],
+      [
+       -117.149352,
+       32.777352
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": "M",
+    "WSEL_REG": 42.3,
+    "STRMBED_EL": 23.7,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 36233.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.143267,
+       32.765447
+      ],
+      [
+       -117.144868,
+       32.771823
+      ],
+      [
+       -117.145154,
+       32.772901
+      ],
+      [
+       -117.146003,
+       32.775332
+      ],
+      [
+       -117.14643,
+       32.776642
+      ],
+      [
+       -117.146729,
+       32.777509
+      ],
+      [
+       -117.146906,
+       32.778007
+      ],
+      [
+       -117.147001,
+       32.778262
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": "N",
+    "WSEL_REG": 43.1,
+    "STRMBED_EL": 24.2,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 36419.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.142279,
+       32.765602
+      ],
+      [
+       -117.142296,
+       32.765662
+      ],
+      [
+       -117.144622,
+       32.773108
+      ],
+      [
+       -117.144735,
+       32.773375
+      ],
+      [
+       -117.144821,
+       32.773613
+      ],
+      [
+       -117.144926,
+       32.773931
+      ],
+      [
+       -117.145469,
+       32.775674
+      ],
+      [
+       -117.145674,
+       32.776308
+      ],
+      [
+       -117.145931,
+       32.777073
+      ],
+      [
+       -117.146254,
+       32.777996
+      ],
+      [
+       -117.146409,
+       32.778421
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": " ",
+    "WSEL_REG": 43.5,
+    "STRMBED_EL": 27.7,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 36997.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.141167,
+       32.766502
+      ],
+      [
+       -117.14407,
+       32.778899
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": "O",
+    "WSEL_REG": 44.0,
+    "STRMBED_EL": 24.6,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 37603.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.139453,
+       32.766651
+      ],
+      [
+       -117.140574,
+       32.772487
+      ],
+      [
+       -117.140847,
+       32.773711
+      ],
+      [
+       -117.141198,
+       32.774587
+      ],
+      [
+       -117.1414,
+       32.775221
+      ],
+      [
+       -117.141614,
+       32.775873
+      ],
+      [
+       -117.141903,
+       32.776729
+      ],
+      [
+       -117.142297,
+       32.777854
+      ],
+      [
+       -117.142645,
+       32.778801
+      ],
+      [
+       -117.142851,
+       32.779347
+      ],
+      [
+       -117.142861,
+       32.779371
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "XS_LTR": "P",
+    "WSEL_REG": 44.4,
+    "STRMBED_EL": 22.0,
+    "WTR_NM": "San Diego River",
+    "STREAM_STN": 37786.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.138545,
+       32.766429
+      ],
+      [
+       -117.14036,
+       32.774192
+      ],
+      [
+       -117.140472,
+       32.774467
+      ],
+      [
+       -117.140611,
+       32.774829
+      ],
+      [
+       -117.140853,
+       32.775497
+      ],
+      [
+       -117.141414,
+       32.777095
+      ],
+      [
+       -117.141688,
+       32.77786
+      ],
+      [
+       -117.142029,
+       32.778784
+      ],
+      [
+       -117.142311,
+       32.779518
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

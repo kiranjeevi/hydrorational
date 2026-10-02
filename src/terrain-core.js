@@ -23,7 +23,16 @@ var CRS_DEFS = {
                '+datum=NAD83 +units=us-ft +no_defs',
   'EPSG:2229': '+proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 ' +
                '+lat_2=34.0333333333333 +x_0=2000000.0001016 +y_0=500000.0001016 ' +
-               '+datum=NAD83 +units=us-ft +no_defs'
+               '+datum=NAD83 +units=us-ft +no_defs',
+  /* NAD83(2011) realisation of zone 6, which newer surveys and lidar
+     tiles declare. At drainage scale it is the same grid as 2230. */
+  'EPSG:6426': '+proj=lcc +lat_0=32.1666666666667 +lon_0=-116.25 ' +
+               '+lat_1=33.8833333333333 +lat_2=32.7833333333333 ' +
+               '+x_0=2000000.0001016 +y_0=500000.0001016 ' +
+               '+datum=NAD83 +units=us-ft +no_defs',
+  /* UTM zone 11 north in metres, the grid USGS 3DEP lidar is delivered in */
+  'EPSG:26911': '+proj=utm +zone=11 +datum=NAD83 +units=m +no_defs',
+  'EPSG:6340':  '+proj=utm +zone=11 +datum=NAD83 +units=m +no_defs'
 };
 var WORKING_CRS = 'EPSG:2230';
 
@@ -486,7 +495,7 @@ function gridMeta(g) {
   return { id: g.id, name: g.name, kind: g.kind, crs: g.crs,
            x0: g.x0, y0: g.y0, cell: g.cell,
            ncols: g.ncols, nrows: g.nrows,
-           priority: g.priority, vSrc: g.vSrc };
+           priority: g.priority, vSrc: g.vSrc, edit: g.edit || undefined };
 }
 
 function encodeGrid(g, opts) {
@@ -528,6 +537,7 @@ function decodeGrid(o) {
                      ncols: o.ncols, nrows: o.nrows,
                      name: o.name, kind: o.kind, priority: o.priority });
   g.id = o.id; g.vSrc = o.vSrc;
+  if (o.edit) g.edit = o.edit;
   if (o.enc === 'stub') return null;          // caller re-fetches these
   if (o.enc === 'empty' || !o.data) {
     for (var e = 0; e < n; e++) g.z[e] = NaN;
@@ -552,4 +562,493 @@ if (typeof module !== 'undefined') {
   module.exports.gridMeta = gridMeta;
   module.exports.bytesToB64 = bytesToB64;
   module.exports.b64ToBytes = b64ToBytes;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   POINT SOURCES: CAD DRAWINGS AND LIDAR
+   Both end as x, y, z points that go through the same Delaunay TIN
+   as survey points. Nothing here guesses a unit or a datum; what a
+   file declares is reported back so the app can check it against
+   what the engineer selected.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── TIN helpers ─────────────────────────────────────────────── */
+function triEdgeLengths(pts, tri, t) {
+  var a = pts[tri[t]], b = pts[tri[t + 1]], c = pts[tri[t + 2]];
+  return [Math.hypot(a[0] - b[0], a[1] - b[1]),
+          Math.hypot(b[0] - c[0], b[1] - c[1]),
+          Math.hypot(c[0] - a[0], c[1] - a[1])];
+}
+
+/* Median edge length of a triangulation, the yardstick for trimming */
+function medianTriEdge(pts, tri) {
+  var e = [];
+  for (var t = 0; t < tri.length; t += 3) {
+    var l = triEdgeLengths(pts, tri, t);
+    e.push(l[0], l[1], l[2]);
+  }
+  if (!e.length) return 0;
+  e.sort(function (x, y) { return x - y; });
+  return e[Math.floor(e.length / 2)];
+}
+
+/* Drop triangles with any edge longer than maxEdge. A Delaunay TIN
+   always fills the convex hull, so across a concave site edge or a
+   gap between drawings it invents ground. Those triangles are long. */
+function trimTIN(pts, tri, maxEdge) {
+  if (!(maxEdge > 0)) return { triangles: tri, dropped: 0 };
+  var out = [], dropped = 0;
+  for (var t = 0; t < tri.length; t += 3) {
+    var l = triEdgeLengths(pts, tri, t);
+    if (l[0] > maxEdge || l[1] > maxEdge || l[2] > maxEdge) { dropped++; continue; }
+    out.push(tri[t], tri[t + 1], tri[t + 2]);
+  }
+  return { triangles: out, dropped: dropped };
+}
+
+/* Remove repeated x, y. The first elevation found at a location wins,
+   and how many disagreed is counted rather than averaged away. */
+function dedupePoints(pts, tol) {
+  tol = tol || 1e-3;
+  var seen = {}, out = [], conflicts = 0;
+  for (var i = 0; i < pts.length; i++) {
+    var p = pts[i];
+    var k = Math.round(p[0] / tol) + ',' + Math.round(p[1] / tol);
+    if (seen[k] === undefined) { seen[k] = p[2]; out.push(p); }
+    else if (Math.abs(seen[k] - p[2]) > 0.01) conflicts++;
+  }
+  return { points: out, conflicts: conflicts };
+}
+
+/* Add vertices along a polyline so no segment is longer than maxSeg.
+   z is interpolated linearly, which is exact for a contour (constant
+   z) and for a 3D breakline between its vertices. */
+function densifyLine(line, maxSeg) {
+  if (!(maxSeg > 0) || line.length < 2) return line.slice();
+  var out = [line[0]];
+  for (var i = 1; i < line.length; i++) {
+    var a = line[i - 1], b = line[i];
+    var d = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    var n = Math.ceil(d / maxSeg);
+    for (var k = 1; k < n; k++) {
+      var f = k / n;
+      out.push([a[0] + f * (b[0] - a[0]), a[1] + f * (b[1] - a[1]), a[2] + f * (b[2] - a[2])]);
+    }
+    out.push(b);
+  }
+  return out;
+}
+
+/* ── INGEST: DXF ─────────────────────────────────────────────────
+   ASCII DXF only. Reads elevations from POINT, LINE, 3DFACE,
+   LWPOLYLINE (elevation in group 38), and POLYLINE with its VERTEX
+   records: 3D polylines carry z per vertex, 2D polylines carry one
+   elevation on the POLYLINE itself. Entities whose every z is zero are
+   2D linework and are skipped and counted, not read as sea level.
+   Text, blocks and Civil 3D objects are not read. */
+var DXF_INSUNITS = { 1: 'in', 2: 'ft', 3: 'mi', 4: 'mm', 5: 'cm', 6: 'm', 21: 'ft' };
+
+function dxfPairs(text) {
+  var lines = String(text).split(/\r\n|\r|\n/), out = [];
+  for (var i = 0; i + 1 < lines.length; i += 2) {
+    var code = parseInt(lines[i].trim(), 10);
+    if (isNaN(code)) { i -= 1; continue; }            // resync on a stray line
+    out.push([code, lines[i + 1].replace(/\s+$/, '').replace(/^\s+/, '')]);
+  }
+  return out;
+}
+
+function dxfNum(v) { var n = parseFloat(v); return isFinite(n) ? n : 0; }
+
+/* The arbitrary axis algorithm for the one non-trivial case drawings
+   contain in practice, a mirrored object with extrusion (0, 0, -1).
+   Anything tilted is reported as skipped rather than projected. */
+function dxfOCS(ent) {
+  var nx = ent.n[0], ny = ent.n[1], nz = ent.n[2];
+  if (Math.abs(nx) < 1e-9 && Math.abs(ny) < 1e-9) return nz > 0 ? 1 : -1;
+  return 0;
+}
+
+function parseDXFTerrain(text, opts) {
+  opts = opts || {};
+  var res = { points: [], layers: {}, insunits: null, units: null,
+              skippedFlat: 0, skippedTilted: 0, entities: 0, binary: false };
+  if (/^AutoCAD Binary DXF/.test(String(text).slice(0, 22))) { res.binary = true; return res; }
+  var pr = dxfPairs(text), section = null, i = 0;
+
+  function layerOf(name) {
+    var k = name || '0';
+    if (!res.layers[k]) res.layers[k] = { name: k, count: 0, zmin: Infinity, zmax: -Infinity,
+                                          entities: 0, flat: 0, types: {} };
+    return res.layers[k];
+  }
+  function emit(layer, type, verts, isLine) {
+    var L = layerOf(layer);
+    var allZero = verts.every(function (v) { return v[2] === 0; });
+    if (allZero) { L.flat++; res.skippedFlat++; return; }
+    if (isLine && opts.maxSeg) verts = densifyLine(verts, opts.maxSeg);
+    L.entities++; res.entities++;
+    L.types[type] = (L.types[type] || 0) + 1;
+    verts.forEach(function (v) {
+      res.points.push([v[0], v[1], v[2], L.name]);
+      L.count++;
+      if (v[2] < L.zmin) L.zmin = v[2];
+      if (v[2] > L.zmax) L.zmax = v[2];
+    });
+  }
+  function readEntity() {                  // pr[i] is [0, TYPE]
+    var ent = { type: pr[i][1], layer: '0', c: {}, list: [], n: [0, 0, 1] };
+    i++;
+    while (i < pr.length && pr[i][0] !== 0) {
+      var code = pr[i][0], v = pr[i][1];
+      if (code === 8) ent.layer = v;
+      else if (code === 210) ent.n[0] = dxfNum(v);
+      else if (code === 220) ent.n[1] = dxfNum(v);
+      else if (code === 230) ent.n[2] = dxfNum(v);
+      if (ent.c[code] === undefined) ent.c[code] = v;
+      ent.list.push([code, v]);
+      i++;
+    }
+    return ent;
+  }
+  function xyz(ent, cx, cy, cz) {
+    return [dxfNum(ent.c[cx]), dxfNum(ent.c[cy]), dxfNum(ent.c[cz])];
+  }
+
+  while (i < pr.length) {
+    var p = pr[i];
+    if (p[0] === 0 && p[1] === 'SECTION') {
+      section = (pr[i + 1] && pr[i + 1][0] === 2) ? pr[i + 1][1] : null;
+      i += 2; continue;
+    }
+    if (p[0] === 0 && p[1] === 'ENDSEC') { section = null; i++; continue; }
+    if (section === 'HEADER' && p[0] === 9 && p[1] === '$INSUNITS') {
+      if (pr[i + 1] && pr[i + 1][0] === 70) res.insunits = parseInt(pr[i + 1][1], 10);
+      i += 2; continue;
+    }
+    if (section !== 'ENTITIES' || p[0] !== 0) { i++; continue; }
+
+    var ent = readEntity(), t = ent.type;
+    if (t === 'POINT') {
+      emit(ent.layer, t, [xyz(ent, 10, 20, 30)], false);
+    } else if (t === 'LINE') {
+      emit(ent.layer, t, [xyz(ent, 10, 20, 30), xyz(ent, 11, 21, 31)], true);
+    } else if (t === '3DFACE') {
+      var f = [xyz(ent, 10, 20, 30), xyz(ent, 11, 21, 31), xyz(ent, 12, 22, 32), xyz(ent, 13, 23, 33)];
+      if (f[3][0] === f[2][0] && f[3][1] === f[2][1] && f[3][2] === f[2][2]) f.pop();
+      emit(ent.layer, t, f, false);
+    } else if (t === 'LWPOLYLINE') {
+      var o = dxfOCS(ent);
+      if (!o) { res.skippedTilted++; continue; }
+      var elev = dxfNum(ent.c[38]) * o, verts = [], cur = null;
+      ent.list.forEach(function (q) {
+        if (q[0] === 10) { cur = [dxfNum(q[1]) * o, 0, elev]; verts.push(cur); }
+        else if (q[0] === 20 && cur) cur[1] = dxfNum(q[1]);
+      });
+      if ((parseInt(ent.c[70], 10) & 1) && verts.length > 2) verts.push(verts[0].slice());
+      if (verts.length) emit(ent.layer, t, verts, true);
+    } else if (t === 'POLYLINE') {
+      var flags = parseInt(ent.c[70], 10) || 0;
+      var is3d = !!(flags & 8), mesh = !!(flags & 16) || !!(flags & 64);
+      var o2 = is3d || mesh ? 1 : dxfOCS(ent);
+      var pelev = dxfNum(ent.c[30]) * (o2 || 1), vs = [];
+      while (i < pr.length && pr[i][0] === 0 && pr[i][1] === 'VERTEX') {
+        var v = readEntity(), vf = parseInt(v.c[70], 10) || 0;
+        if (vf & 128 && !(vf & 64)) continue;           // polyface face record, no position
+        if (vf & 16) continue;                          // spline frame control point
+        var vx = dxfNum(v.c[10]), vy = dxfNum(v.c[20]);
+        if (is3d || mesh) vs.push([vx, vy, dxfNum(v.c[30])]);
+        else vs.push([vx * (o2 || 1), vy, pelev]);
+      }
+      if (i < pr.length && pr[i][0] === 0 && pr[i][1] === 'SEQEND') readEntity();
+      if (!is3d && !mesh && !o2) { res.skippedTilted++; continue; }
+      if ((flags & 1) && vs.length > 2 && !mesh) vs.push(vs[0].slice());
+      if (vs.length) emit(ent.layer, t, vs, !mesh);
+    }
+  }
+  res.units = DXF_INSUNITS[res.insunits] || null;
+  return res;
+}
+
+/* Pick the points on the chosen layers, ready for the TIN */
+function dxfPointsOnLayers(parsed, layerNames) {
+  var want = {};
+  (layerNames || []).forEach(function (n) { want[n] = true; });
+  var out = [];
+  parsed.points.forEach(function (p) { if (want[p[3]]) out.push([p[0], p[1], p[2]]); });
+  return out;
+}
+
+/* Layers that look like utilities rather than ground. Pipes are drawn
+   in 3D at their inverts, which would cut trenches into the surface. */
+var DXF_NOT_GROUND = /(^|[-_ ])(PIPE|SD|SS|SEW|SEWER|STORM|WATER|WTR|W|GAS|ELEC|UTIL|UTILITY|INV|INVERT|CONDUIT|TEL|FO)([-_ ]|$)/i;
+function dxfDefaultLayers(parsed) {
+  return Object.keys(parsed.layers).filter(function (k) {
+    var L = parsed.layers[k];
+    return L.count > 0 && !DXF_NOT_GROUND.test(k);
+  });
+}
+
+/* ── INGEST: LAS lidar ──────────────────────────────────────────
+   LAS 1.0 to 1.4, point formats 0 to 10. Ground is class 2. When a
+   file carries no class 2 points it is unclassified, and every point
+   is used with a warning, since buildings and trees then sit in the
+   surface. LAZ is compressed and is refused with a pointer to the fix. */
+function parseLASHeader(buf) {
+  var dv = new DataView(buf);
+  if (buf.byteLength < 227) return { error: 'too short to be a LAS file' };
+  var sig = String.fromCharCode(dv.getUint8(0), dv.getUint8(1), dv.getUint8(2), dv.getUint8(3));
+  if (sig !== 'LASF') return { error: 'not a LAS file' };
+  var h = {
+    major: dv.getUint8(24), minor: dv.getUint8(25),
+    headerSize: dv.getUint16(94, true), offset: dv.getUint32(96, true),
+    nvlr: dv.getUint32(100, true), formatRaw: dv.getUint8(104),
+    recLen: dv.getUint16(105, true), count: dv.getUint32(107, true),
+    scale: [dv.getFloat64(131, true), dv.getFloat64(139, true), dv.getFloat64(147, true)],
+    off: [dv.getFloat64(155, true), dv.getFloat64(163, true), dv.getFloat64(171, true)],
+    max: [dv.getFloat64(179, true), dv.getFloat64(195, true), dv.getFloat64(211, true)],
+    min: [dv.getFloat64(187, true), dv.getFloat64(203, true), dv.getFloat64(219, true)]
+  };
+  h.compressed = !!(h.formatRaw & 0xC0);
+  h.format = h.formatRaw & 0x3F;
+  if (h.minor >= 4 && buf.byteLength >= 255 && h.headerSize >= 375) {
+    var big = dv.getUint32(247, true) + dv.getUint32(251, true) * 4294967296;
+    if (big > 0) h.count = big;
+  }
+  return h;
+}
+
+/* The whole KEY[...] block from a WKT string, brackets matched */
+function wktBlock(w, key) {
+  var i = w.indexOf(key + '[');
+  if (i < 0) return null;
+  var depth = 0;
+  for (var j = i + key.length; j < w.length; j++) {
+    if (w[j] === '[') depth++;
+    else if (w[j] === ']') { depth--; if (!depth) return w.slice(i, j + 1); }
+  }
+  return null;
+}
+
+/* The CRS and vertical unit the file declares, from its GeoKey or WKT
+   record. Returned as found; the app decides what to do with it. */
+var GEO_VUNITS = { 9001: 'm', 9002: 'ft', 9003: 'ft' };
+function lasGeoref(buf, h) {
+  var dv = new DataView(buf), pos = h.headerSize, out = { epsg: null, vUnits: null, hUnits: null, wkt: null };
+  for (var k = 0; k < h.nvlr && pos + 54 <= buf.byteLength; k++) {
+    var uid = '';
+    for (var j = 0; j < 16; j++) { var ch = dv.getUint8(pos + 2 + j); if (ch) uid += String.fromCharCode(ch); }
+    var rid = dv.getUint16(pos + 18, true), len = dv.getUint16(pos + 20, true), body = pos + 54;
+    if (uid === 'LASF_Projection' && rid === 34735 && body + 8 <= buf.byteLength) {
+      var nkeys = dv.getUint16(body + 6, true);
+      for (var q = 0; q < nkeys; q++) {
+        var e = body + 8 + q * 8;
+        if (e + 8 > buf.byteLength) break;
+        var id = dv.getUint16(e, true), loc = dv.getUint16(e + 2, true), val = dv.getUint16(e + 6, true);
+        if (loc !== 0) continue;
+        if (id === 3072) out.epsg = 'EPSG:' + val;
+        else if (id === 4099) out.vUnits = GEO_VUNITS[val] || null;
+        else if (id === 3076) out.hUnits = GEO_VUNITS[val] || null;
+      }
+    } else if (uid === 'LASF_Projection' && rid === 2112) {
+      var w = '';
+      for (var b = 0; b < len && body + b < buf.byteLength; b++) {
+        var c = dv.getUint8(body + b); if (c) w += String.fromCharCode(c);
+      }
+      out.wkt = w;
+      var pj = wktBlock(w, 'PROJCS') || wktBlock(w, 'PROJCRS');
+      var pe = pj && pj.match(/(?:AUTHORITY|ID)\["EPSG",\s*"?(\d+)"?\]\]\s*$/);
+      if (pe) out.epsg = 'EPSG:' + pe[1];
+      var vb = wktBlock(w, 'VERT_CS') || wktBlock(w, 'VERTCRS');
+      var vu = vb && vb.match(/(?:UNIT|LENGTHUNIT)\["([^"]+)"/);
+      if (vu) out.vUnits = /met/i.test(vu[1]) ? 'm' : (/f(oo|ee)t/i.test(vu[1]) ? 'ft' : null);
+    }
+    pos = body + len;
+  }
+  return out;
+}
+
+function parseLAS(buf, opts) {
+  opts = opts || {};
+  var h = parseLASHeader(buf);
+  if (h.error) return { error: h.error };
+  if (h.compressed) return { error: 'compressed (LAZ)', header: h };
+  if (h.format > 10) return { error: 'point format ' + h.format + ' is not a LAS format', header: h };
+  var dv = new DataView(buf), classAt = h.format >= 6 ? 16 : 15;
+  var n = Math.min(h.count, Math.floor((buf.byteLength - h.offset) / h.recLen));
+  var cls = {}, ground = [], all = [], want = opts.classes || [2];
+  var wantSet = {}; want.forEach(function (c) { wantSet[c] = true; });
+  var step = Math.max(1, opts.stride || 1);
+  for (var k = 0; k < n; k++) {
+    var p = h.offset + k * h.recLen;
+    var cl = dv.getUint8(p + classAt);
+    if (h.format < 6) cl = cl & 31;
+    cls[cl] = (cls[cl] || 0) + 1;
+    if (k % step) continue;
+    var x = dv.getInt32(p, true) * h.scale[0] + h.off[0];
+    var y = dv.getInt32(p + 4, true) * h.scale[1] + h.off[1];
+    var z = dv.getInt32(p + 8, true) * h.scale[2] + h.off[2];
+    if (wantSet[cl]) ground.push([x, y, z]);
+    else if (cl !== 7 && cl !== 18) all.push([x, y, z]);  // keep noise out of the fallback
+  }
+  var unclassified = !ground.length;
+  return { header: h, georef: lasGeoref(buf, h), classes: cls, read: n,
+           points: unclassified ? all : ground, unclassified: unclassified };
+}
+
+/* Thin points to one per bin, the bin mean. Lidar ground runs to many
+   points per square foot; the composite works far coarser than that. */
+function binPoints(pts, cell) {
+  if (!pts.length || !(cell > 0)) return pts;
+  var xmin = Infinity, ymin = Infinity;
+  pts.forEach(function (p) { if (p[0] < xmin) xmin = p[0]; if (p[1] < ymin) ymin = p[1]; });
+  var bins = {};
+  pts.forEach(function (p) {
+    var k = Math.floor((p[0] - xmin) / cell) + ',' + Math.floor((p[1] - ymin) / cell);
+    var b = bins[k] || (bins[k] = [0, 0, 0, 0]);
+    b[0] += p[0]; b[1] += p[1]; b[2] += p[2]; b[3]++;
+  });
+  return Object.keys(bins).map(function (k) {
+    var b = bins[k]; return [b[0] / b[3], b[1] / b[3], b[2] / b[3]];
+  });
+}
+
+if (typeof module !== 'undefined') {
+  module.exports.medianTriEdge = medianTriEdge;
+  module.exports.trimTIN = trimTIN;
+  module.exports.dedupePoints = dedupePoints;
+  module.exports.densifyLine = densifyLine;
+  module.exports.dxfPairs = dxfPairs;
+  module.exports.parseDXFTerrain = parseDXFTerrain;
+  module.exports.dxfPointsOnLayers = dxfPointsOnLayers;
+  module.exports.dxfDefaultLayers = dxfDefaultLayers;
+  module.exports.parseLASHeader = parseLASHeader;
+  module.exports.lasGeoref = lasGeoref;
+  module.exports.parseLAS = parseLAS;
+  module.exports.binPoints = binPoints;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GRADING EDITS
+   A pad or basin drawn in the app, or a footprint raised or lowered,
+   becomes its own layer on top of the stack. The layers underneath
+   are never written to; removing the edit layer restores them.
+
+   A pad sits at one elevation inside its outline and daylights to
+   the ground at H:1 outside it. Per cell outside the outline, at a
+   distance d from it, the slope surfaces are elev - d/H (fill) and
+   elev + d/H (cut). Ground above the cut surface is cut down to it,
+   ground below the fill surface is filled up to it, and ground in
+   between is untouched. That one rule covers fill pads, cut basins
+   and pads that are part cut and part fill. Corners come out rounded,
+   as a daylight offset from a polygon does.
+   ═══════════════════════════════════════════════════════════════ */
+function pointInPolyXY(x, y, ring) {
+  var inside = false;
+  for (var i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    var xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1];
+    if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) inside = !inside;
+  }
+  return inside;
+}
+
+function distToRingXY(x, y, ring) {
+  var best = Infinity;
+  for (var i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    var ax = ring[j][0], ay = ring[j][1], bx = ring[i][0], by = ring[i][1];
+    var dx = bx - ax, dy = by - ay, L2 = dx * dx + dy * dy;
+    var t = L2 > 0 ? ((x - ax) * dx + (y - ay) * dy) / L2 : 0;
+    t = Math.max(0, Math.min(1, t));
+    var ex = ax + t * dx - x, ey = ay + t * dy - y, d = ex * ex + ey * ey;
+    if (d < best) best = d;
+  }
+  return Math.sqrt(best);
+}
+
+/* base: a grid in the working CRS (the composite). ring: [[x, y]] in
+   the same CRS. spec: { mode: 'pad' | 'offset', elev, delta, slope }.
+   Returns { grid, cut, fill, changed, footprint } with volumes in
+   cubic feet and the footprint in square feet, or null when the
+   outline misses the base entirely. */
+function gradeEdit(base, ring, spec) {
+  if (!ring || ring.length < 3) return null;
+  var mode = spec.mode === 'offset' ? 'offset' : 'pad';
+  var H = Math.max(0, +spec.slope || 0), elev = +spec.elev, delta = +spec.delta || 0;
+  if (mode === 'pad' && !isFinite(elev)) return null;
+
+  var rx0 = Infinity, rx1 = -Infinity, ry0 = Infinity, ry1 = -Infinity;
+  ring.forEach(function (p) {
+    if (p[0] < rx0) rx0 = p[0]; if (p[0] > rx1) rx1 = p[0];
+    if (p[1] < ry0) ry0 = p[1]; if (p[1] > ry1) ry1 = p[1];
+  });
+  // how far a slope can run: the full relief of the base at H:1
+  var reach = 0;
+  if (mode === 'pad' && H > 0) {
+    var zmn = Infinity, zmx = -Infinity;
+    for (var q = 0; q < base.z.length; q++) {
+      var vq = base.z[q]; if (isNaN(vq)) continue;
+      if (vq < zmn) zmn = vq; if (vq > zmx) zmx = vq;
+    }
+    if (isFinite(zmn)) reach = H * Math.max(Math.abs(elev - zmn), Math.abs(elev - zmx));
+  }
+  var cell = base.cell, top = base.y0 + base.nrows * base.cell;
+  var c0 = Math.max(0, Math.floor((rx0 - reach - base.x0) / cell) - 1);
+  var c1 = Math.min(base.ncols - 1, Math.ceil((rx1 + reach - base.x0) / cell) + 1);
+  var r0 = Math.max(0, Math.floor((top - (ry1 + reach)) / cell) - 1);
+  var r1 = Math.min(base.nrows - 1, Math.ceil((top - (ry0 - reach)) / cell) + 1);
+  if (c1 < c0 || r1 < r0) return null;
+
+  var ncols = c1 - c0 + 1, nrows = r1 - r0 + 1;
+  var g = makeGrid({ crs: base.crs, x0: base.x0 + c0 * cell,
+                     y0: top - (r1 + 1) * cell, cell: cell,
+                     ncols: ncols, nrows: nrows, name: 'grading edit', kind: 'edit' });
+  var changed = new Uint8Array(ncols * nrows);
+  var cut = 0, fill = 0, nChanged = 0, inside = 0, a = cell * cell;
+  for (var r = 0; r < nrows; r++) {
+    for (var c = 0; c < ncols; c++) {
+      var k = r * ncols + c;
+      var zb = base.z[(r + r0) * base.ncols + (c + c0)];
+      var p = cellCentre(g, r, c), zn = zb;
+      var isIn = pointInPolyXY(p.x, p.y, ring);
+      if (isIn) {
+        inside++;
+        zn = mode === 'pad' ? elev : (isNaN(zb) ? NaN : zb + delta);
+      } else if (mode === 'pad' && !isNaN(zb)) {
+        if (H > 0) {
+          var d = distToRingXY(p.x, p.y, ring);
+          var up = elev + d / H, dn = elev - d / H;
+          if (zb > up) zn = up; else if (zb < dn) zn = dn;
+        }
+      }
+      g.z[k] = zn;
+      if (!isNaN(zn) && (isNaN(zb) || Math.abs(zn - zb) > 1e-6)) {
+        changed[k] = 1; nChanged++;
+        if (!isNaN(zb)) { if (zn > zb) fill += (zn - zb) * a; else cut += (zb - zn) * a; }
+      }
+    }
+  }
+  if (!inside && !nChanged) return null;
+  // keep the changed cells and a one cell margin of untouched ground, so
+  // the bilinear sampler has neighbours at the edge; blank the rest
+  for (var r2 = 0; r2 < nrows; r2++) {
+    for (var c2 = 0; c2 < ncols; c2++) {
+      var k2 = r2 * ncols + c2;
+      if (changed[k2]) continue;
+      var near = false;
+      for (var dr = -1; dr <= 1 && !near; dr++) {
+        for (var dc = -1; dc <= 1; dc++) {
+          var rr = r2 + dr, cc = c2 + dc;
+          if (rr >= 0 && rr < nrows && cc >= 0 && cc < ncols && changed[rr * ncols + cc]) { near = true; break; }
+        }
+      }
+      if (!near) g.z[k2] = NaN;
+    }
+  }
+  return { grid: g, cut: cut, fill: fill, changed: nChanged, footprint: inside * a };
+}
+
+if (typeof module !== 'undefined') {
+  module.exports.pointInPolyXY = pointInPolyXY;
+  module.exports.distToRingXY = distToRingXY;
+  module.exports.gradeEdit = gradeEdit;
 }

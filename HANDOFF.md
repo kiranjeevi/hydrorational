@@ -20,7 +20,8 @@ Scope is San Diego County only. Other jurisdictions were deliberately dropped.
 - **Blue accents only.** Navy and sea blue such as `#2E86C1`. No gold or yellow
   for headings or accents in any document or export.
 - **Run the tests before and after every change.** `cd tests && npm test`.
-  540 checks across 24 suites, all passing. A change that breaks one is wrong
+  679 checks across 29 suites, all passing. Run `npm install` in tests first;
+  the runner now fails any suite that crashes or reports nothing. A change that breaks one is wrong
   until proven otherwise.
 - **Hydrology never changes to suit a feature.** The manual is the authority.
 
@@ -30,14 +31,16 @@ Scope is San Diego County only. Other jurisdictions were deliberately dropped.
     src/terrain-core.js    grid model, ingestion, composite, contours, profiles
     src/flow-core.js       depression filling, D8, watersheds, flow paths, pond fill
     functions/index.js     proxy for NOAA and SSURGO, Firebase Cloud Function
-    tests/                 21 suites, run with npm test
+    tools/inline-core.js   copies src/*.js into the page: node tools/inline-core.js
+    tests/                 29 suites, run with npm test; fixtures builders in tests/lib
     samples/               data for every import path
     docs/sample_report.pdf example export
 
 `src/*.js` are inlined into `public/index.html` between BEGIN and END markers
 so the app stays one file while the maths stays testable in node. **Suite 12
 asserts the two copies are byte identical.** If you edit the maths, edit the
-source file and re-inline, never the copy in the page.
+source file and re-inline with `node tools/inline-core.js`, never the copy in
+the page.
 
 ## What is built
 
@@ -56,6 +59,19 @@ profiles, one click watershed delineation, traced longest flow path split into
 overland and watercourse with slopes off the ground, basin stage-storage read
 from a graded surface, and a provenance model so terrain derived values never
 overwrite anything you typed.
+
+Terrain sources and edits:
+DXF (ASCII) with a layer chooser, utility layers unticked by default and flat
+2D linework skipped. LAS 1.0 to 1.4, ground class 2 only, CRS and vertical
+unit read from GeoKeys or WKT, binned and gridded through a trimmed TIN. LAZ
+is refused with the fix. UTM 11N and NAD83(2011) zone 6 are known. Grading
+edits: a pad or basin at an elevation that daylights at H:1, or a footprint
+raised or lowered, each as its own layer above the stack with cut and fill.
+
+Reference layers (none feed a calculation):
+FEMA flood zones, BFE lines and cross sections with WSEL, NHD flowlines
+(layer 3) and waterbodies, NWI wetlands, SSURGO soil groups through the
+proxy, NLCD 2021 land cover.
 
 Data in and out:
 NOAA CSV by file, drag or paste. Shapefile with State Plane reprojection,
@@ -94,16 +110,24 @@ limit and the rule.
   state before starting an async call that may call you back.
 - **A test that returns `true` unconditionally is not a test.** Three had crept
   in. Suite runs now contain none.
+- **Layers in other CRSs.** The composite used to union bounds and cells in
+  each layer's own units, so a UTM or zone 5 layer vanished. Bounds and cell
+  are now projected into the working CRS first. Suite 27 pins it.
+- **Grading edits never write to the layers under them.** Removing the edit
+  layer is the undo. Edit layers are excluded from the seam check.
+- **Ids after opening a project.** `nextId` was not advanced past the saved
+  layer ids, so a new layer could overwrite one from the file. Fixed, suite 29.
 - **HTML nesting is not covered by a syntax check.** Two stray `</div>` tags
   once put the properties panel outside the flex row while 197 tests passed.
   Suite 01 now asserts the DOM tree.
 
 ## Open items
 
-1. **Deploy.** Not pushed to GitHub or Firebase yet. Accounts need Anonymous
-   and Email link sign-in enabled in the console, see SETUP.md. `SETUP.md` has the three
-   commands. Hosting runs on the free plan. The proxy function needs Blaze
-   because it calls hosts outside Google.
+1. **Deploy.** Live at https://hydrorational.web.app, project `hydrorational`,
+   on the Blaze plan since 2026-09-21. The proxy at /api/proxy is deployed and
+   was checked on 2026-10-01 against NOAA Atlas 14 and NRCS Soil Data Access.
+   Deploy with the Firebase CLI from this folder (SETUP.md); pushing to GitHub
+   does not deploy. Work since the last deploy is uncommitted locally.
 2. **Name.** Undecided. Studio names are out, Hydrology Studio and Stormwater
    Studio are existing competitors. StormQ with `Q = CIA` as the tagline was the
    suggestion.
@@ -113,8 +137,10 @@ limit and the rule.
 4. **Note 3 in Section 3.4** is printed in the manual as `I = sum(CA)/Q`. Since
    `Q = sum(CA) I` that inverts to `I = Q/sum(CA)`, which is what the app uses.
    Worth confirming before a submittal leans on it.
-5. Not built: FEMA base flood elevation lines, LAS and DXF terrain import,
-   terrain editing inside the app.
+5. Built since the last brief: BFE lines, DXF and LAS import, grading edits,
+   and the reference layers that were placeholder toggles. Next candidates:
+   LAZ decompression in the browser, sloped pads, and reading Civil 3D
+   LandXML surfaces.
 
 ## How to verify a change
 

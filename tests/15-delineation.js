@@ -145,6 +145,23 @@ setTimeout(async ()=>{
    const h=w.genHydro(10,0.6,20,34.3,[0.332,0.476,0.576,0.790,1.119,1.518,1.815,4.108]);
    return h.N===36&&h.vol===49.30&&h.Tp===245;
  });
+ t('26 hiding a delineated subarea hides its traced route too', ()=>{
+   w.toggleScVisibility(sc.id,false);
+   const hidden=!w.drawnItems.hasLayer(sc.layer) && !w.drawnItems.hasLayer(sc.pathLayer);
+   w.toggleScVisibility(sc.id,true);
+   return hidden && w.drawnItems.hasLayer(sc.layer) && w.drawnItems.hasLayer(sc.pathLayer);
+ });
+ t('27 selecting a subarea after a flow path makes Delete act on the subarea', ()=>{
+   w.appState.activeFpId='fp-stale';
+   w.selectSubarea(sc.id);
+   return w.appState.activeFpId===null && w.appState.activeScId===sc.id;
+ });
+ t('28 deleting a delineated subarea removes its traced route', ()=>{
+   const route=sc.pathLayer, poly=sc.layer;
+   w.selectSubarea(sc.id); w.deleteSelected();
+   return !w.appState.subareas[sc.id] && route &&
+          !w.drawnItems.hasLayer(route) && !w.drawnItems.hasLayer(poly);
+ });
  t('25 no runtime errors beyond the jsdom limits', ()=>
    errs.filter(e=>!/getContext|navigation|Not implemented/.test(e)).length===0);
 

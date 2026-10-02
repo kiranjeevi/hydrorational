@@ -1,0 +1,118 @@
+{
+ "displayFieldName": "ELEV",
+ "fieldAliases": {
+  "ELEV": "ELEV",
+  "LEN_UNIT": "LEN_UNIT",
+  "V_DATUM": "V_DATUM"
+ },
+ "geometryType": "esriGeometryPolyline",
+ "spatialReference": {
+  "wkid": 4326,
+  "latestWkid": 4326
+ },
+ "fields": [
+  {
+   "name": "ELEV",
+   "type": "esriFieldTypeDouble",
+   "alias": "ELEV"
+  },
+  {
+   "name": "LEN_UNIT",
+   "type": "esriFieldTypeString",
+   "alias": "LEN_UNIT",
+   "length": 16
+  },
+  {
+   "name": "V_DATUM",
+   "type": "esriFieldTypeString",
+   "alias": "V_DATUM",
+   "length": 17
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "ELEV": 40.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.15608843698961,
+       32.764425787753424
+      ],
+      [
+       -117.15605015653853,
+       32.764253373213457
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "ELEV": 41.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.14927681142998,
+       32.772856367681015
+      ],
+      [
+       -117.14919295698394,
+       32.772878566645261
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "ELEV": 40.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.15582667808395,
+       32.767825834175113
+      ],
+      [
+       -117.15567701122043,
+       32.767453473149878
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "ELEV": 40.0,
+    "LEN_UNIT": "Feet",
+    "V_DATUM": "NAVD88"
+   },
+   "geometry": {
+    "paths": [
+     [
+      [
+       -117.15542866563918,
+       32.76597955651583
+      ],
+      [
+       -117.15517404416494,
+       32.76535924162571
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}
