@@ -1,0 +1,536 @@
+{
+ "app": "HydroRational",
+ "format": 3,
+ "savedAt": "2026-10-06T20:53:31.574Z",
+ "project": {
+  "f-pname": "SD CCD New facility",
+  "f-addr": "504 Elizabeth St San Diego, CA, 92113 / APN: 5475611400",
+  "f-eng": "",
+  "f-lic": "",
+  "f-firm": "",
+  "f-lat": "32.70042",
+  "f-lon": "-117.10162",
+  "f-date": "2026-10-06",
+  "f-freq": "100-year",
+  "f-jur": "SD County 2026",
+  "name": "SD CCD New facility",
+  "addr": "504 Elizabeth St San Diego, CA, 92113 / APN: 5475611400",
+  "eng": "",
+  "lic": "",
+  "firm": ""
+ },
+ "noaa": [
+  0.344,
+  0.493,
+  0.596,
+  0.825,
+  1.16,
+  1.54,
+  1.83,
+  2.4
+ ],
+ "noaaSource": "auto",
+ "view": {
+  "lat": 32.70020869946332,
+  "lng": -117.09917306900026,
+  "zoom": 18,
+  "basemap": "esritopo"
+ },
+ "counters": {
+  "sc": 2,
+  "node": 3,
+  "fp": 2
+ },
+ "subareas": [
+  {
+   "id": "sc-1",
+   "name": "Subarea A",
+   "type": "subcatchment",
+   "area": 0.43,
+   "slope": 2,
+   "lu_idx": 0,
+   "imp": 0,
+   "soil": "D",
+   "L_ov": 70,
+   "sl_ov": 2,
+   "L_tt": 350,
+   "sl_tt": 1.5,
+   "tt_method": "manning",
+   "stn_from": "100",
+   "stn_to": "101",
+   "C": 0.35,
+   "Ti": 10.9,
+   "Tt": 1.22,
+   "Tc": 12.1,
+   "I": 2.6727,
+   "Qp": 0.4,
+   "usNode": null,
+   "drainTo": "nd-2",
+   "lu_key": "Natural",
+   "Lm": 70,
+   "V": 4.8,
+   "ttSrc": "manual entry",
+   "prov": {
+    "imp": "default"
+   },
+   "latlngs": [
+    [
+     32.70043215,
+     -117.09955528
+    ],
+    [
+     32.70043102,
+     -117.09926024
+    ],
+    [
+     32.70039942,
+     -117.09921867
+    ],
+    [
+     32.69974825,
+     -117.09918514
+    ],
+    [
+     32.69975164,
+     -117.09934741
+    ],
+    [
+     32.69986223,
+     -117.09934875
+    ],
+    [
+     32.69998073,
+     -117.09938899
+    ],
+    [
+     32.70028318,
+     -117.09954992
+    ]
+   ]
+  }
+ ],
+ "nodes": [
+  {
+   "id": "nd-1",
+   "name": "Node 1",
+   "type": "junction",
+   "elev": 79.04,
+   "elevSrc": "USGS 3DEP",
+   "lat": 32.69975614925921,
+   "lng": -117.09919452667238
+  },
+  {
+   "id": "nd-2",
+   "name": "Node 2",
+   "type": "junction",
+   "elev": 71.36,
+   "elevSrc": "USGS 3DEP",
+   "lat": 32.70041973830013,
+   "lng": -117.09953919053079
+  }
+ ],
+ "flowpaths": [
+  {
+   "id": "fp-1",
+   "name": "Flow path 1",
+   "kind": "gutter",
+   "length_ft": 269,
+   "fromNode": "nd-1",
+   "toNode": "nd-2",
+   "slope_pct": 2.855,
+   "autoSlope": true,
+   "n": 0.013,
+   "dia_in": 18,
+   "V": 6.62,
+   "Tt": 0.68,
+   "slopeSrc": "from node elevations",
+   "latlngs": [
+    [
+     32.69975615,
+     -117.09919319
+    ],
+    [
+     32.70004619,
+     -117.09928304
+    ],
+    [
+     32.70011277,
+     -117.09937289
+    ],
+    [
+     32.70030237,
+     -117.09948421
+    ],
+    [
+     32.70034864,
+     -117.09950969
+    ],
+    [
+     32.70041861,
+     -117.09954053
+    ]
+   ]
+  }
+ ],
+ "terrain": {
+  "crs": "EPSG:2230",
+  "layers": []
+ },
+ "activeScenario": "existing",
+ "scenarios": {
+  "existing": {
+   "id": "existing",
+   "name": "Existing conditions",
+   "type": "existing",
+   "layerIds": [],
+   "subareas": [
+    {
+     "id": "sc-1",
+     "name": "Subarea A",
+     "type": "subcatchment",
+     "area": 0.43,
+     "slope": 2,
+     "lu_idx": 0,
+     "imp": 0,
+     "soil": "D",
+     "L_ov": 70,
+     "sl_ov": 2,
+     "L_tt": 350,
+     "sl_tt": 1.5,
+     "tt_method": "manning",
+     "stn_from": "100",
+     "stn_to": "101",
+     "C": 0.35,
+     "Ti": 10.9,
+     "Tt": 1.22,
+     "Tc": 12.1,
+     "I": 2.6727,
+     "Qp": 0.4,
+     "usNode": null,
+     "drainTo": "nd-2",
+     "lu_key": "Natural",
+     "Lm": 70,
+     "V": 4.8,
+     "ttSrc": "manual entry",
+     "prov": {
+      "imp": "default"
+     },
+     "latlngs": [
+      [
+       32.70043215,
+       -117.09955528
+      ],
+      [
+       32.70043102,
+       -117.09926024
+      ],
+      [
+       32.70039942,
+       -117.09921867
+      ],
+      [
+       32.69974825,
+       -117.09918514
+      ],
+      [
+       32.69975164,
+       -117.09934741
+      ],
+      [
+       32.69986223,
+       -117.09934875
+      ],
+      [
+       32.69998073,
+       -117.09938899
+      ],
+      [
+       32.70028318,
+       -117.09954992
+      ]
+     ]
+    }
+   ],
+   "nodes": [
+    {
+     "id": "nd-1",
+     "name": "Node 1",
+     "type": "junction",
+     "elev": 79.04,
+     "elevSrc": "USGS 3DEP",
+     "lat": 32.69975614925921,
+     "lng": -117.09919452667238
+    },
+    {
+     "id": "nd-2",
+     "name": "Node 2",
+     "type": "junction",
+     "elev": 71.36,
+     "elevSrc": "USGS 3DEP",
+     "lat": 32.70041973830013,
+     "lng": -117.09953919053079
+    }
+   ],
+   "flowpaths": [
+    {
+     "id": "fp-1",
+     "name": "Flow path 1",
+     "kind": "gutter",
+     "length_ft": 269,
+     "fromNode": "nd-1",
+     "toNode": "nd-2",
+     "slope_pct": 2.855,
+     "autoSlope": true,
+     "n": 0.013,
+     "dia_in": 18,
+     "V": 6.62,
+     "Tt": 0.68,
+     "slopeSrc": "from node elevations",
+     "latlngs": [
+      [
+       32.69975615,
+       -117.09919319
+      ],
+      [
+       32.70004619,
+       -117.09928304
+      ],
+      [
+       32.70011277,
+       -117.09937289
+      ],
+      [
+       32.70030237,
+       -117.09948421
+      ],
+      [
+       32.70034864,
+       -117.09950969
+      ],
+      [
+       32.70041861,
+       -117.09954053
+      ]
+     ]
+    }
+   ],
+   "counters": {
+    "sc": 2,
+    "node": 3,
+    "fp": 2
+   },
+   "noaa": [
+    0.344,
+    0.493,
+    0.596,
+    0.825,
+    1.16,
+    1.54,
+    1.83,
+    2.4
+   ],
+   "results": {
+    "Node 1": {
+     "name": "Node 1",
+     "type": "junction",
+     "Q": null,
+     "Tc": null,
+     "area": 0,
+     "streams": 0,
+     "routed": false
+    },
+    "Node 2": {
+     "name": "Node 2",
+     "type": "junction",
+     "Q": 0.4,
+     "Tc": 12.1,
+     "area": 0.43,
+     "streams": 1,
+     "routed": false
+    },
+    "__totals": {
+     "subareaQ": 0.4,
+     "area": 0.43,
+     "subareas": 1
+    }
+   }
+  },
+  "proposed": {
+   "id": "proposed",
+   "name": "Proposed conditions",
+   "type": "proposed",
+   "layerIds": [],
+   "subareas": [
+    {
+     "id": "sc-1",
+     "name": "Subarea A",
+     "type": "subcatchment",
+     "area": 0.43,
+     "slope": 2,
+     "lu_idx": 8,
+     "imp": 85,
+     "soil": "D",
+     "L_ov": 70,
+     "sl_ov": 2,
+     "L_tt": 350,
+     "sl_tt": 1.5,
+     "tt_method": "manning",
+     "stn_from": "100",
+     "stn_to": "101",
+     "C": 0.818,
+     "Ti": 5,
+     "Tt": 1.22,
+     "Tc": 6.2,
+     "I": 3.72238,
+     "Qp": 1.31,
+     "usNode": null,
+     "drainTo": "nd-2",
+     "lu_key": "G.Com",
+     "Lm": 60,
+     "V": 4.8,
+     "ttSrc": "manual entry",
+     "prov": {
+      "imp": "default"
+     },
+     "latlngs": [
+      [
+       32.70043215,
+       -117.09955528
+      ],
+      [
+       32.70043102,
+       -117.09926024
+      ],
+      [
+       32.70039942,
+       -117.09921867
+      ],
+      [
+       32.69974825,
+       -117.09918514
+      ],
+      [
+       32.69975164,
+       -117.09934741
+      ],
+      [
+       32.69986223,
+       -117.09934875
+      ],
+      [
+       32.69998073,
+       -117.09938899
+      ],
+      [
+       32.70028318,
+       -117.09954992
+      ]
+     ]
+    }
+   ],
+   "nodes": [
+    {
+     "id": "nd-1",
+     "name": "Node 1",
+     "type": "junction",
+     "elev": 79.04,
+     "elevSrc": "USGS 3DEP",
+     "lat": 32.69975614925921,
+     "lng": -117.09919452667238
+    },
+    {
+     "id": "nd-2",
+     "name": "Node 2",
+     "type": "junction",
+     "elev": 71.36,
+     "elevSrc": "USGS 3DEP",
+     "lat": 32.70041973830013,
+     "lng": -117.09953919053079
+    }
+   ],
+   "flowpaths": [
+    {
+     "id": "fp-1",
+     "name": "Flow path 1",
+     "kind": "gutter",
+     "length_ft": 269,
+     "fromNode": "nd-1",
+     "toNode": "nd-2",
+     "slope_pct": 2.855,
+     "autoSlope": true,
+     "n": 0.013,
+     "dia_in": 18,
+     "V": 6.62,
+     "Tt": 0.68,
+     "slopeSrc": "from node elevations",
+     "latlngs": [
+      [
+       32.69975615,
+       -117.09919319
+      ],
+      [
+       32.70004619,
+       -117.09928304
+      ],
+      [
+       32.70011277,
+       -117.09937289
+      ],
+      [
+       32.70030237,
+       -117.09948421
+      ],
+      [
+       32.70034864,
+       -117.09950969
+      ],
+      [
+       32.70041861,
+       -117.09954053
+      ]
+     ]
+    }
+   ],
+   "counters": {
+    "sc": 2,
+    "node": 3,
+    "fp": 2
+   },
+   "noaa": [
+    0.344,
+    0.493,
+    0.596,
+    0.825,
+    1.16,
+    1.54,
+    1.83,
+    2.4
+   ],
+   "results": {
+    "Node 1": {
+     "name": "Node 1",
+     "type": "junction",
+     "Q": null,
+     "Tc": null,
+     "area": 0,
+     "streams": 0,
+     "routed": false
+    },
+    "Node 2": {
+     "name": "Node 2",
+     "type": "junction",
+     "Q": 1.31,
+     "Tc": 6.2,
+     "area": 0.43,
+     "streams": 1,
+     "routed": false
+    },
+    "__totals": {
+     "subareaQ": 1.31,
+     "area": 0.43,
+     "subareas": 1
+    }
+   }
+  }
+ }
+}

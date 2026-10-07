@@ -20,7 +20,7 @@ Scope is San Diego County only. Other jurisdictions were deliberately dropped.
 - **Blue accents only.** Navy and sea blue such as `#2E86C1`. No gold or yellow
   for headings or accents in any document or export.
 - **Run the tests before and after every change.** `cd tests && npm test`.
-  679 checks across 29 suites, all passing. Run `npm install` in tests first;
+  726 checks across 31 suites, all passing. Run `npm install` in tests first;
   the runner now fails any suite that crashes or reports nothing. A change that breaks one is wrong
   until proven otherwise.
 - **Hydrology never changes to suit a feature.** The manual is the authority.
@@ -32,7 +32,7 @@ Scope is San Diego County only. Other jurisdictions were deliberately dropped.
     src/flow-core.js       depression filling, D8, watersheds, flow paths, pond fill
     functions/index.js     proxy for NOAA and SSURGO, Firebase Cloud Function
     tools/inline-core.js   copies src/*.js into the page: node tools/inline-core.js
-    tests/                 29 suites, run with npm test; fixtures builders in tests/lib
+    tests/                 31 suites, run with npm test; fixtures builders in tests/lib
     samples/               data for every import path
     docs/sample_report.pdf example export
 
@@ -67,6 +67,14 @@ unit read from GeoKeys or WKT, binned and gridded through a trimmed TIN. LAZ
 is refused with the fix. UTM 11N and NAD83(2011) zone 6 are known. Grading
 edits: a pad or basin at an elevation that daylights at H:1, or a footprint
 raised or lowered, each as its own layer above the stack with cut and fill.
+
+Existing and proposed workflow:
+The toolbar switch reads Existing | Proposed. Once a project has a name,
+address or drawn elements, the right panel shows the project and the pre and
+post discharge table instead of the getting started cards. Reports cover
+existing, proposed or both (asked once, remembered); the comparison prints
+once at the end. Boundary editing touches subarea polygons only and ends with
+the button, Done, Enter, double click or right click; Cancel or Esc reverts.
 
 Reference layers (none feed a calculation):
 FEMA flood zones, BFE lines and cross sections with WSEL, NHD flowlines
@@ -115,6 +123,9 @@ limit and the rule.
   are now projected into the working CRS first. Suite 27 pins it.
 - **Grading edits never write to the layers under them.** Removing the edit
   layer is the undo. Edit layers are excluded from the seam check.
+- **Never run plain `git status` from the Linux shell** on this folder. It
+  leaves a `.git/index.lock` it cannot remove, which blocks commits on
+  Windows. Use `git --no-optional-locks status`.
 - **Ids after opening a project.** `nextId` was not advanced past the saved
   layer ids, so a new layer could overwrite one from the file. Fixed, suite 29.
 - **HTML nesting is not covered by a syntax check.** Two stray `</div>` tags

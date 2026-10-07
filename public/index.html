@@ -233,6 +233,28 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
 .leaflet-tooltip.bfe-lbl{background:rgba(255,255,255,.88);border:1px solid #8e3a9d;color:#4a1d52;
   font:600 10px/1.2 Inter,sans-serif;padding:1px 4px;box-shadow:none;white-space:nowrap}
 .leaflet-tooltip.bfe-lbl:before{display:none}
+/* existing / proposed switch in the toolbar */
+.seg{display:flex;margin-right:6px;border:1px solid var(--acc);border-radius:3px;overflow:hidden;flex-shrink:0}
+.seg button{background:var(--acc-bg);border:0;color:var(--acc-l);font-size:11px;font-weight:500;padding:4px 10px;cursor:pointer;font-family:var(--sans)}
+.seg button+button{border-left:1px solid var(--acc)}
+.seg button.on{background:var(--acc);color:#fff}
+/* project panel rows */
+.sp-row{display:flex;justify-content:space-between;font-size:11px;color:var(--t2);padding:3px 0;border-bottom:1px solid var(--border)}
+.sp-row span:last-child{font-family:var(--mono);color:var(--t1)}
+.sp-tbl{width:100%;border-collapse:collapse;font-size:11px;margin-top:4px}
+.sp-tbl th{color:var(--t3);font-weight:500;text-align:right;padding:3px 4px;border-bottom:1px solid var(--border)}
+.sp-tbl th:first-child,.sp-tbl td:first-child{text-align:left}
+.sp-tbl td{padding:3px 4px;text-align:right;font-family:var(--mono);color:var(--t1)}
+/* report scope chooser */
+#report-scope{position:fixed;left:50%;top:30%;transform:translateX(-50%);z-index:3000;width:320px;
+  background:var(--bg2);border:1px solid var(--acc);border-radius:4px;padding:14px;box-shadow:0 8px 30px rgba(0,0,0,.45)}
+#report-scope .btn-s{width:100%;margin-top:6px;text-align:left}
+#report-scope .btn-p{margin-top:6px;text-align:left}
+/* boundary editing bar on the map */
+#edit-bar{position:absolute;left:50%;top:62px;transform:translateX(-50%);z-index:1000;display:flex;align-items:center;gap:8px;
+  background:var(--bg2);border:1px solid var(--acc);border-radius:4px;padding:6px 8px 6px 12px;box-shadow:0 4px 16px rgba(0,0,0,.35);
+  font-size:11px;color:var(--t2);font-family:var(--sans)}
+#edit-bar .btn-p{width:auto;padding:5px 14px}
 </style>
 </head>
 <body>
@@ -270,8 +292,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
   </div>
   <div class="tb-sp"></div>
   <button class="tb-thm" id="thm" onclick="toggleTheme()">🌙</button>
-  <select class="tb-jur" id="scenario-sel" style="appearance:none;padding-right:20px" onchange="switchScenario(this.value)"></select>
-  <button class="tb-jur" id="scenario-make" onclick="createProposed()">+ Proposed</button>
+  <div class="seg" id="scenario-seg" title="Existing and proposed conditions. The highlighted one is being edited.">
+    <button id="seg-existing" class="on" onclick="segScenario('existing')">Existing</button>
+    <button id="seg-proposed" onclick="segScenario('proposed')">+ Proposed</button>
+  </div>
+  <select class="tb-jur" id="scenario-sel" style="display:none" onchange="switchScenario(this.value)"></select>
+  <button class="tb-jur" id="scenario-make" style="display:none" onclick="createProposed()">+ Proposed</button>
   <button class="tb-jur" id="manual-btn" title="Open the 2026 County of San Diego Hydrology Manual" onclick="toggleManual()">
     <svg style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
     SD County 2026
@@ -363,7 +389,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
           <label class="tog"><input type="checkbox" id="tog-channels" onchange="toggleChannels(this.checked)"><span class="tog-tr"></span></label></div>
         <div style="padding:3px 8px 8px 20px">
           <button class="btn-p" style="width:100%" onclick="startDelineate()">Delineate a watershed</button>
-          <button class="btn-s" style="width:100%;margin-top:4px" onclick="toggleShapeEdit()">Edit boundaries</button>
+          <button class="btn-s" id="btn-shape-edit" style="width:100%;margin-top:4px" onclick="toggleShapeEdit()">Edit boundaries</button>
           <div style="font-size:9px;color:var(--t4);margin-top:4px;line-height:1.5">Click the outlet. The boundary, area, overland reach and watercourse come from the terrain, and anything you then change is kept.</div>
         </div>
       </div>
@@ -445,6 +471,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
 <!-- MAP -->
 <div id="mw">
   <div id="map"></div>
+  <div id="edit-bar" style="display:none">
+    <span>Editing boundaries. Drag the white squares to reshape a subarea.</span>
+    <button class="btn-p" id="edit-done" onclick="finishShapeEdit(true)">Done</button>
+    <button class="btn-s" id="edit-cancel" onclick="finishShapeEdit(false)">Cancel</button>
+  </div>
   <div id="srch">
     <input id="si" type="text" placeholder="🔍  Search address or coordinates…" onkeydown="if(event.key==='Enter')doSearch()"/>
     <button id="sb" onclick="doSearch()">
@@ -476,6 +507,14 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
 <div id="rp">
   <div class="rh rh-l" id="rhr"></div>
   <div class="ph">Properties</div>
+  <div id="report-scope" style="display:none">
+    <div class="wt">Which conditions should the report cover?</div>
+    <div class="ws">The choice is remembered for this project.</div>
+    <button class="btn-s" onclick="pickReportScope('existing')">Existing conditions only</button>
+    <button class="btn-s" onclick="pickReportScope('proposed')">Proposed conditions, with the pre and post comparison</button>
+    <button class="btn-p" onclick="pickReportScope('both')">Existing and proposed, with the pre and post comparison</button>
+    <button class="btn-s" style="text-align:center" onclick="closeReportScope()">Cancel</button>
+  </div>
   <div id="pb">
 
     <!-- WELCOME -->
@@ -498,6 +537,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);font-family:var(--sa
       <div class="wstep"><div class="wnum">3</div><div><span class="wst">Run Analysis</span><span class="wsb">Click Run Analysis → Section 6 hydrograph generates, results appear in bottom panel</span></div></div>
       <div class="wstep"><div class="wnum">4</div><div><span class="wst">Export the report</span><span class="wsb">Node and station listing, summary tables and hydrograph. Preview it in the Report tab, then export as PDF or text.</span></div></div>
     </div>
+
+    <!-- PROJECT PANEL, once a project is set up -->
+    <div id="v-scenario" class="wc" style="display:none"></div>
 
     <!-- ACCOUNT -->
     <div id="v-account" style="display:none">
@@ -1103,6 +1145,8 @@ function toggleTileLayer(id, on) {
 
 /* ── TOOL MANAGEMENT ────────────────────────────────────────────── */
 function setTool(t) {
+  // Picking any tool ends boundary editing, keeping the changes
+  if (appState.flow && appState.flow.editor) finishShapeEdit(true);
   // Stop any active draw handler first
   if (activeDrawer) {
     try { activeDrawer.disable(); } catch(e) {}
@@ -1617,6 +1661,7 @@ function runAnalysis() {
 
   var hydro = genHydro(sc.Tc, sc.C, sc.area, sc.Qp, appState.noaaDepths);
   appState.lastHydro = hydro;
+  appState.lastHydroScId = sc.id;
 
   // Open drawer and show chart
   var dr = document.getElementById('dr');
@@ -2249,7 +2294,7 @@ function saveProjectInfo() {
   };
   readNoaaInputs();
   T('✓ Project saved');
-  showV('v-welcome');
+  showHome();
 }
 
 function centerOnSite() {
@@ -2261,7 +2306,7 @@ function centerOnSite() {
 
 /* ── UI HELPERS ─────────────────────────────────────────────────── */
 function showV(id) {
-  ['v-welcome','v-proj','v-sc','v-jct','v-basin','v-link','v-account'].forEach(function(v) {
+  ['v-welcome','v-scenario','v-proj','v-sc','v-jct','v-basin','v-link','v-account'].forEach(function(v) {
     document.getElementById(v).style.display = v===id ? '' : 'none';
   });
 }
@@ -2332,6 +2377,11 @@ function initResize(handleId, panelId, side) {
 /* ── KEYBOARD SHORTCUTS ─────────────────────────────────────────── */
 document.addEventListener('keydown',function(e){
   if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) return;
+  if (appState.flow && appState.flow.editor) {
+    if (e.key === 'Enter') { e.preventDefault(); finishShapeEdit(true); }
+    else if (e.key === 'Escape') { e.preventDefault(); finishShapeEdit(false); }
+    return;
+  }
   var map2={s:'select',p:'subcatchment',j:'junction',b:'basin',o:'outfall',l:'link'};
   if(map2[e.key]) setTool(map2[e.key]);
   if(e.key==='Escape') setTool('select');
@@ -2970,8 +3020,8 @@ function deleteSelected() {
     delete appState.subareas[appState.activeScId];
     appState.activeScId = null;
   } else { return; }
-  showV('v-welcome');
   recomputeNetwork();
+  showHome();
   T('Deleted');
 }
 
@@ -3171,6 +3221,7 @@ function updateNetworkTree() {
   if (i) i.addEventListener('change', function () { handleDEMFile(i.files[0]); });
   document.addEventListener('keydown', function (e) {
     if (['INPUT','SELECT','TEXTAREA'].indexOf(e.target.tagName) >= 0) return;
+    if (appState.flow && appState.flow.editor) return;     // editing a boundary, not deleting
     if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); deleteSelected(); }
   });
 })();
@@ -3371,6 +3422,7 @@ function newProject() {
     if (el && id !== 'f-freq' && id !== 'f-jur' && id !== 'f-date') el.value = '';
   });
   appState.project = {};
+  appState.reportScope = null;
   var pl = document.getElementById('dr-placeholder');
   var cv = document.getElementById('hydro-canvas');
   if (pl) pl.style.display = 'flex';
@@ -3555,7 +3607,7 @@ function loadProjectText(text, fname) {
   }
   var noGeom = nSc > 0 && !Object.keys(appState.subareas).some(function (k) { return appState.subareas[k].layer; });
 
-  showV('v-welcome');
+  showHome();
   if (noGeom) {
     T('Opened an older project file: settings restored, but it has no saved shapes. Redraw them and save again.');
   } else {
@@ -3653,7 +3705,96 @@ function freqLabel() {
 }
 function freqNum() { return parseInt(freqLabel(), 10) || 100; }
 
-function buildReport() {
+/* The pre and post development table, empty when there is no pair */
+function comparisonLines() {
+  var L = [];
+  if (typeof compareScenarios !== 'function') return L;
+  var cmp = compareScenarios();
+  if (!cmp || !cmp.rows.length) return L;
+  L.push(RULE_E);
+  L.push('            PRE AND POST DEVELOPMENT PEAK DISCHARGE');
+  L.push(RULE_E);
+  L.push(' POINT OF DISCHARGE      TYPE        PRE Q    POST Q    CHANGE   PERCENT');
+  L.push('                                     (CFS)     (CFS)     (CFS)');
+  L.push(RULE_L);
+  cmp.rows.forEach(function (r) {
+    L.push(' ' + padR(String(r.node).substring(0, 22), 23) +
+           padR(String(r.type).toUpperCase().substring(0, 10), 12) +
+           padL(r.preQ  != null ? fx(r.preQ, 2)  : '-', 8) +
+           padL(r.postQ != null ? fx(r.postQ, 2) : '-', 10) +
+           padL(r.delta != null ? (r.delta > 0 ? '+' : '') + fx(r.delta, 2) : '-', 10) +
+           padL(r.pct   != null ? (r.pct > 0 ? '+' : '') + fx(r.pct, 1) : '-', 10) +
+           (r.onlyIn ? '   ' + r.onlyIn.toUpperCase() + ' ONLY' : '') +
+           (r.routed ? '   ROUTED' : ''));
+  });
+  L.push(RULE_L);
+  L.push(' EXISTING: ' + cmp.totalsPre.subareas + ' SUBAREAS, ' +
+       fx(cmp.totalsPre.area, 2) + ' ACRES');
+  L.push(' PROPOSED: ' + cmp.totalsPost.subareas + ' SUBAREAS, ' +
+       fx(cmp.totalsPost.area, 2) + ' ACRES');
+  L.push(' A POSITIVE CHANGE IS AN INCREASE OVER EXISTING CONDITIONS AND');
+  L.push(' NORMALLY REQUIRES MITIGATION.');
+  L.push('');
+  return L;
+}
+
+/* ── REPORT SCOPE: existing, proposed, or both ─────────────────── */
+var SCOPE_LABELS = { existing: 'existing conditions only', proposed: 'proposed, with the comparison',
+                     both: 'existing and proposed, with the comparison' };
+function scopeLabel(sc) { return SCOPE_LABELS[sc] || 'ask each time'; }
+function scopeSuffix(sc) {
+  return { existing: '_Existing', proposed: '_Proposed', both: '_Existing_and_Proposed' }[sc] || '';
+}
+function setReportScope(sc) {
+  appState.reportScope = SCOPE_LABELS[sc] ? sc : null;
+  var pv = document.getElementById('v-scenario');
+  if (pv && pv.style.display !== 'none') renderScenarioPanel();
+}
+/* With one condition there is nothing to choose. With two, use the
+   remembered choice or ask. Returns null when it had to ask. */
+function resolveScope(sc, action) {
+  if (!appState.scenarios.proposed || !appState.scenarios.existing) return 'active';
+  if (SCOPE_LABELS[sc]) { setReportScope(sc); return sc; }
+  if (appState.reportScope) return appState.reportScope;
+  openReportScope(action);
+  return null;
+}
+function openReportScope(action) {
+  appState.pendingReport = action || null;
+  var el = document.getElementById('report-scope');
+  if (el) el.style.display = 'block';
+}
+function closeReportScope() {
+  var el = document.getElementById('report-scope');
+  if (el) el.style.display = 'none';
+  appState.pendingReport = null;
+}
+function pickReportScope(sc) {
+  var act = appState.pendingReport;
+  closeReportScope();
+  setReportScope(sc);
+  if (act === 'txt') exportTXT(sc);
+  else if (act === 'pdf') exportPDF(sc);
+  else if (act === 'preview') showReport();
+}
+
+/* The text report for a scope. Each condition is reported on its own
+   numbers, and the comparison is printed once, at the end. */
+function buildReportFor(sc) {
+  if (sc === 'existing') return withScenario('existing', function () { return buildReport({ compare: false }); });
+  if (sc === 'proposed') return withScenario('proposed', function () { return buildReport(); });
+  if (sc === 'both') {
+    var a = withScenario('existing', function () { return buildReport({ compare: false }); });
+    var b = withScenario('proposed', function () { return buildReport({ compare: false }); });
+    var c = comparisonLines();
+    return a + '\n\n\n' + b + (c.length ? '\n\n\n' + c.concat([RULE_E,
+      '                 END OF PRE AND POST DEVELOPMENT COMPARISON', RULE_E]).join('\n') : '');
+  }
+  return buildReport();
+}
+
+function buildReport(opts) {
+  opts = opts || {};
   var P = collectProjectInfo();
   var L = [];
   var subs  = Object.keys(appState.subareas).map(function (k) { return appState.subareas[k]; });
@@ -3959,35 +4100,7 @@ function buildReport() {
     L.push('');
   });
 
-  if (typeof compareScenarios === 'function') {
-    var cmp = compareScenarios();
-    if (cmp && cmp.rows.length) {
-      L.push(RULE_E);
-      L.push('            PRE AND POST DEVELOPMENT PEAK DISCHARGE');
-      L.push(RULE_E);
-      L.push(' POINT OF DISCHARGE      TYPE        PRE Q    POST Q    CHANGE   PERCENT');
-      L.push('                                     (CFS)     (CFS)     (CFS)');
-      L.push(RULE_L);
-      cmp.rows.forEach(function (r) {
-        L.push(' ' + padR(String(r.node).substring(0, 22), 23) +
-               padR(String(r.type).toUpperCase().substring(0, 10), 12) +
-               padL(r.preQ  != null ? fx(r.preQ, 2)  : '-', 8) +
-               padL(r.postQ != null ? fx(r.postQ, 2) : '-', 10) +
-               padL(r.delta != null ? (r.delta > 0 ? '+' : '') + fx(r.delta, 2) : '-', 10) +
-               padL(r.pct   != null ? (r.pct > 0 ? '+' : '') + fx(r.pct, 1) : '-', 10) +
-               (r.onlyIn ? '   ' + r.onlyIn.toUpperCase() + ' ONLY' : '') +
-               (r.routed ? '   ROUTED' : ''));
-      });
-      L.push(RULE_L);
-      L.push(' EXISTING: ' + cmp.totalsPre.subareas + ' SUBAREAS, ' +
-             fx(cmp.totalsPre.area, 2) + ' ACRES');
-      L.push(' PROPOSED: ' + cmp.totalsPost.subareas + ' SUBAREAS, ' +
-             fx(cmp.totalsPost.area, 2) + ' ACRES');
-      L.push(' A POSITIVE CHANGE IS AN INCREASE OVER EXISTING CONDITIONS AND');
-      L.push(' NORMALLY REQUIRES MITIGATION.');
-      L.push('');
-    }
-  }
+  if (opts.compare !== false) L = L.concat(comparisonLines());
 
   L.push(RULE_E);
   L.push('                 END OF RATIONAL METHOD ANALYSIS');
@@ -4002,7 +4115,8 @@ function buildReport() {
 function showReport() {
   var el = document.getElementById('report-panel');
   if (!el) return;
-  el.textContent = buildReport();
+  var both = appState.scenarios.proposed && appState.scenarios.existing;
+  el.textContent = buildReportFor(both ? (appState.reportScope || 'both') : 'active');
   showDrawerTab('aes');
   var dr = document.getElementById('dr');
   if (dr && !dr.classList.contains('open')) toggleDrawer();
@@ -4022,10 +4136,12 @@ function reportBaseName() {
   return ((P.name || P.addr || 'hydrorational-report')
     .replace(/[^a-z0-9]/gi, '_').replace(/_+/g, '_').slice(0, 60));
 }
-function exportTXT() {
+function exportTXT(scope) {
   if (!Object.keys(appState.subareas).length) { T('Draw a subcatchment first'); return; }
-  downloadBlob(buildReport(), 'text/plain', reportBaseName() + '_Node_Station_Report.txt');
-  T('Text report exported');
+  scope = resolveScope(scope, 'txt');
+  if (!scope) return;
+  downloadBlob(buildReportFor(scope), 'text/plain', reportBaseName() + scopeSuffix(scope) + '_Node_Station_Report.txt');
+  T('Text report exported' + (scope === 'active' ? '' : ', ' + scopeLabel(scope)));
 }
 
 /* ── PDF EXPORT ────────────────────────────────────────────────── */
@@ -4038,30 +4154,34 @@ function ensureJsPDF(cb) {
   document.head.appendChild(s);
 }
 
-function hydrographPNG() {
-  if (!appState.lastHydro) return null;
+function hydrographPNG(hydro) {
+  hydro = hydro || appState.lastHydro;
+  if (!hydro) return null;
   try {
     var c = document.createElement('canvas');
-    drawHydroChart(appState.lastHydro, c, 1100, 460);
+    drawHydroChart(hydro, c, 1100, 460);
     return c.toDataURL('image/png');
   } catch (err) { return null; }
 }
 
-function exportPDF() {
+function exportPDF(scope) {
   if (!Object.keys(appState.subareas).length) { T('Draw a subcatchment first'); return; }
+  scope = resolveScope(scope, 'pdf');
+  if (!scope) return;
   T('Building PDF report...');
   ensureJsPDF(function (ok) {
     if (!ok) {
       T('PDF library could not load. Exporting the text report instead.');
-      exportTXT();
+      exportTXT(scope);
       return;
     }
-    try { renderPDF(); }
+    try { renderPDF(scope); }
     catch (err) { T('PDF build failed: ' + err.message + '. Use the text report.'); }
   });
 }
 
-function renderPDF() {
+function renderPDF(scope) {
+  scope = scope || 'active';
   var jsPDF = window.jspdf.jsPDF;
   var doc = new jsPDF({unit: 'pt', format: 'letter'});
   var P = collectProjectInfo();
@@ -4105,6 +4225,17 @@ function renderPDF() {
   kv('Jurisdiction', (P['f-jur'] || 'SD County 2026') + '     Storm frequency: ' + freqLabel());
   if (P['f-lat'] && P['f-lon']) kv('Site coordinates', P['f-lat'] + ', ' + P['f-lon']);
   y += 6;
+
+  /* Everything below is per condition. With a scope, each condition is
+     loaded in turn and reported on its own numbers and hydrograph. */
+  function conditionBody(sid, first) {
+  if (sid) {
+    if (!first) { doc.addPage(); y = M; }
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(13); doc.setTextColor(26, 111, 168);
+    doc.text(appState.scenarios[sid].name.toUpperCase(), M, y + 4); y += 12;
+    doc.setDrawColor(46, 134, 193); doc.setLineWidth(1.0); doc.line(M, y, W - M, y); y += 16;
+    doc.setTextColor(0, 0, 0);
+  }
 
   if (appState.noaaDepths) {
     band('NOAA ATLAS 14 DEPTHS (INCHES)');
@@ -4163,7 +4294,7 @@ function renderPDF() {
   }
 
   // hydrograph
-  var png = hydrographPNG();
+  var png = hydrographPNG(sid ? scenarioHydro() : null);
   if (png) {
     need(240); band('SECTION 6 RATIONAL METHOD HYDROGRAPH');
     try {
@@ -4174,14 +4305,32 @@ function renderPDF() {
 
   // node and station listing
   doc.addPage(); y = M;
-  band('NODE AND STATION LISTING');
-  doc.setFont('courier', 'normal'); doc.setFontSize(7.2);
-  var lines = buildReport().split('\n');
-  lines.forEach(function (ln) {
-    if (y > H - M) { doc.addPage(); y = M; doc.setFont('courier','normal'); doc.setFontSize(7.2); }
-    doc.text(ln.substring(0, 96), M, y);
-    y += 8.4;
+  band('NODE AND STATION LISTING' + (sid ? ', ' + appState.scenarios[sid].name.toUpperCase() : ''));
+  courier(buildReport(sid ? { compare: false } : {}).split('\n'));
+  }
+
+  function courier(lines) {
+    doc.setFont('courier', 'normal'); doc.setFontSize(7.2);
+    lines.forEach(function (ln) {
+      if (y > H - M) { doc.addPage(); y = M; doc.setFont('courier','normal'); doc.setFontSize(7.2); }
+      doc.text(ln.substring(0, 96), M, y);
+      y += 8.4;
+    });
+  }
+
+  var sids = scope === 'both' ? ['existing', 'proposed'] :
+             (scope === 'existing' || scope === 'proposed') ? [scope] : [null];
+  sids.forEach(function (sid, i) {
+    withScenario(sid, function () { conditionBody(sid, i === 0); });
   });
+  if (scope === 'both' || scope === 'proposed') {
+    var cl = comparisonLines();
+    if (cl.length) {
+      doc.addPage(); y = M;
+      band('PRE AND POST DEVELOPMENT PEAK DISCHARGE');
+      courier(cl);
+    }
+  }
 
   // footers
   var pages = doc.internal.getNumberOfPages();
@@ -4193,7 +4342,7 @@ function renderPDF() {
     doc.setTextColor(0);
   }
 
-  doc.save(reportBaseName() + '_Hydrology_Report.pdf');
+  doc.save(reportBaseName() + scopeSuffix(scope) + '_Hydrology_Report.pdf');
   T('PDF report exported: ' + pages + ' pages');
 }
 
@@ -7872,28 +8021,81 @@ function markManualIfChanged(sc) {
 }
 
 /* ── EDIT THE SHAPE ────────────────────────────────────────────── */
+/* ── EDITING BOUNDARIES ───────────────────────────────────────────
+   Only subarea polygons are made editable; nodes and flow paths keep
+   their own positions. Ways out: the button again, Done, Enter, a
+   double click or a right click on the map keep the changes; Cancel
+   or Esc put the boundaries back as they were. */
 function toggleShapeEdit() {
-  if (appState.flow.editor) {
-    appState.flow.editor.disable();
-    appState.flow.editor = null;
-    Object.keys(appState.subareas).forEach(function (k) {
-      var sc = appState.subareas[k];
-      if (!sc.layer) return;
-      var a = +(geodesicArea(sc.layer.getLatLngs()[0]) / 4046.86).toFixed(3);
-      if (Math.abs(a - sc.area) > 0.005) {
-        sc.area = a;
-        if (sc.prov) { sc.prov.geometry = 'edited'; sc.prov.area = 'edited'; }
-        sc.layer.bindTooltip(sc.name + '  ' + a.toFixed(2) + ' ac (edited)', {direction:'top'});
-      }
-    });
-    recomputeNetwork();
-    if (appState.activeScId) selectSubarea(appState.activeScId);
-    T('Shape editing off. Areas updated from the edited boundaries.');
-    return;
+  if (appState.flow.editor) { finishShapeEdit(true); return; }
+  startShapeEdit();
+}
+
+function startShapeEdit() {
+  var subs = Object.keys(appState.subareas).map(function (k) { return appState.subareas[k]; })
+                   .filter(function (sc) { return sc.layer; });
+  if (!subs.length) { T('There are no subarea boundaries to edit yet'); return; }
+  if (curTool !== 'select') setTool('select');
+  if (L.drawLocal && L.drawLocal.edit) {
+    L.drawLocal.edit.handlers.edit.tooltip.text =
+      'Drag a square to reshape. Enter or double-click to finish, Esc cancels.';
+    L.drawLocal.edit.handlers.edit.tooltip.subtext = '';
   }
-  appState.flow.editor = new L.EditToolbar.Edit(map, { featureGroup: drawnItems });
+  var grp = L.featureGroup();
+  subs.forEach(function (sc) { grp.addLayer(sc.layer); });
+  appState.flow.editGroup = grp;
+  appState.flow.editor = new L.EditToolbar.Edit(map, { featureGroup: grp });
   appState.flow.editor.enable();
-  T('Drag the vertices to adjust a boundary, then press the button again to finish.');
+  if (map.doubleClickZoom) map.doubleClickZoom.disable();
+  map.on('dblclick', shapeEditFinishFromMap);
+  map.on('contextmenu', shapeEditFinishFromMap);
+  shapeEditUI(true);
+  T('Editing boundaries. Drag the white squares, then press Done.');
+}
+
+function shapeEditFinishFromMap(e) {
+  if (e && e.originalEvent && e.originalEvent.preventDefault) e.originalEvent.preventDefault();
+  finishShapeEdit(true);
+}
+
+function shapeEditUI(on) {
+  var b = document.getElementById('btn-shape-edit');
+  if (b) {
+    b.textContent = on ? 'Done editing boundaries' : 'Edit boundaries';
+    b.className = on ? 'btn-p' : 'btn-s';
+  }
+  var bar = document.getElementById('edit-bar');
+  if (bar) bar.style.display = on ? 'flex' : 'none';
+}
+
+function finishShapeEdit(keep) {
+  var ed = appState.flow.editor;
+  if (!ed) return;
+  if (!keep) { try { ed.revertLayers(); } catch (e) {} }
+  ed.disable();
+  appState.flow.editor = null;
+  appState.flow.editGroup = null;
+  map.off('dblclick', shapeEditFinishFromMap);
+  map.off('contextmenu', shapeEditFinishFromMap);
+  if (map.doubleClickZoom) map.doubleClickZoom.enable();
+  shapeEditUI(false);
+  if (!keep) { T('Boundary edits cancelled'); return; }
+
+  var changed = 0;
+  Object.keys(appState.subareas).forEach(function (k) {
+    var sc = appState.subareas[k];
+    if (!sc.layer) return;
+    var a = +(geodesicArea(sc.layer.getLatLngs()[0]) / 4046.86).toFixed(3);
+    if (Math.abs(a - sc.area) > 0.0005) {
+      sc.area = a; changed++;
+      if (sc.prov) { sc.prov.geometry = 'edited'; sc.prov.area = 'edited'; }
+      sc.layer.bindTooltip(sc.name + '  ' + a.toFixed(2) + ' ac (edited)', {direction:'top'});
+    }
+  });
+  recomputeNetwork();
+  if (appState.activeScId) selectSubarea(appState.activeScId);
+  T(changed ? 'Boundaries saved. ' + changed + ' subarea area' + (changed === 1 ? '' : 's') + ' updated.'
+            : 'Boundary editing finished, nothing changed');
 }
 
 /* ── CHANNELS ──────────────────────────────────────────────────── */
@@ -8060,7 +8262,8 @@ function snapshotScenario() {
   s.results   = scenarioResults();
 }
 
-function restoreScenario(id) {
+function restoreScenario(id, opts) {
+  opts = opts || {};
   var s = appState.scenarios[id];
   if (!s) return false;
   appState.subareas = {}; appState.nodes = {}; appState.flowpaths = {};
@@ -8089,8 +8292,45 @@ function restoreScenario(id) {
   rebuildComposite();
   recomputeNetwork();
   updateScenarioUI();
-  showV('v-welcome');
+  if (!opts.quiet) {
+    showHome();
+    // the hydrograph on screen belongs to the condition just left
+    if (appState.lastHydro) {
+      var h = scenarioHydro();
+      appState.lastHydro = h;
+      var cv = document.getElementById('hydro-canvas');
+      if (h && cv && cv.style.display !== 'none') drawHydroChart(h);
+    }
+  }
   return true;
+}
+
+/* Run fn with another condition loaded, then put the one being edited
+   back exactly as it was. Used to report on a condition that is not on
+   screen. */
+function withScenario(id, fn) {
+  if (!id || !appState.scenarios[id] || id === appState.activeScenario) return fn();
+  var prev = appState.activeScenario, keepHydro = appState.lastHydro;
+  snapshotScenario();
+  restoreScenario(id, { quiet: true });
+  try { return fn(); }
+  finally {
+    restoreScenario(prev, { quiet: true });
+    appState.lastHydro = keepHydro;
+  }
+}
+
+/* The Section 6 hydrograph for the condition on screen, for the subarea
+   last analysed, or the first one */
+function scenarioHydro() {
+  readNoaaInputs();
+  if (!appState.noaaDepths) return null;
+  var ids = Object.keys(appState.subareas);
+  if (!ids.length) return null;
+  var sc = appState.subareas[appState.lastHydroScId] || appState.subareas[ids[0]];
+  computeSubarea(sc);
+  if (!sc.Qp) return null;
+  return genHydro(sc.Tc, sc.C, sc.area, sc.Qp, appState.noaaDepths);
 }
 
 function switchScenario(id) {
@@ -8175,6 +8415,85 @@ function compareScenarios() {
 }
 
 /* ── UI ────────────────────────────────────────────────────────── */
+function segScenario(id) {
+  if (id === 'proposed' && !appState.scenarios.proposed) { createProposed(); return; }
+  if (id === appState.activeScenario) return;
+  switchScenario(id);
+}
+
+function projectIsSetUp() {
+  var P = collectProjectInfo();
+  return !!((P.name && P.name.trim()) || (P.addr && P.addr.trim()) ||
+            Object.keys(appState.subareas).length || Object.keys(appState.nodes).length);
+}
+
+/* Where the right panel goes when nothing is selected: the getting
+   started cards for an empty project, the project panel otherwise. */
+function showHome() {
+  if (projectIsSetUp()) { renderScenarioPanel(); showV('v-scenario'); }
+  else showV('v-welcome');
+}
+
+function fq(v) { return (v == null || !isFinite(v)) ? '-' : (+v).toFixed(2); }
+
+function renderScenarioPanel() {
+  var el = document.getElementById('v-scenario');
+  if (!el) return;
+  var P = collectProjectInfo();
+  var s = appState.scenarios[appState.activeScenario];
+  var hasP = !!appState.scenarios.proposed;
+  var other = (s && s.id === 'proposed') ? 'existing' : 'proposed';
+  var subs = Object.keys(appState.subareas).map(function (k) { return appState.subareas[k]; });
+  var area = subs.reduce(function (t, x) { return t + (x.area || 0); }, 0);
+  var h = '<div><div class="ws" style="margin:0">Now editing</div>' +
+          '<div class="wt" style="color:var(--acc-l)">' + escapeHtml(s ? s.name : 'Existing conditions') + '</div></div>';
+  h += '<div class="wcard" style="cursor:default;display:block">' +
+       '<div class="wct">' + escapeHtml(P.name || 'Untitled project') + '</div>' +
+       (P.addr ? '<div class="wcb">' + escapeHtml(P.addr) + '</div>' : '') +
+       '<div class="sp-row" style="margin-top:6px"><span>Subareas</span><span>' + subs.length + ', ' + area.toFixed(2) + ' ac</span></div>' +
+       '<div class="sp-row"><span>Nodes</span><span>' + Object.keys(appState.nodes).length + '</span></div>' +
+       '<div class="sp-row" style="border-bottom:0"><span>Flow paths</span><span>' + Object.keys(appState.flowpaths).length + '</span></div>' +
+       '</div>';
+
+  var cmp = hasP ? compareScenarios() : null;
+  if (cmp && cmp.rows.length) {
+    h += '<div class="fst" style="margin-top:2px">Peak discharge, existing and proposed (cfs)</div>' +
+         '<table class="sp-tbl"><thead><tr><th>Node</th><th>Existing</th><th>Proposed</th><th>Change</th></tr></thead><tbody>' +
+         cmp.rows.filter(function (r) { return r.preQ != null || r.postQ != null; }).map(function (r) {
+           var col = r.delta == null ? 'var(--t3)' : (r.delta > 0.005 ? 'var(--red)' : (r.delta < -0.005 ? 'var(--green)' : 'var(--t2)'));
+           return '<tr><td>' + escapeHtml(r.node) + '</td><td>' + fq(r.preQ) + '</td><td>' + fq(r.postQ) +
+                  '</td><td style="color:' + col + '">' + (r.delta != null ? (r.delta > 0 ? '+' : '') + r.delta.toFixed(2) : '-') + '</td></tr>';
+         }).join('') + '</tbody></table>';
+  } else {
+    var res = scenarioResults();
+    var rows = Object.keys(res).filter(function (k) { return k !== '__totals' && res[k].Q != null; });
+    if (rows.length) {
+      h += '<div class="fst" style="margin-top:2px">Peak discharge (cfs)</div><table class="sp-tbl"><tbody>' +
+           rows.map(function (k) { return '<tr><td>' + escapeHtml(k) + '</td><td>' + fq(res[k].Q) + '</td></tr>'; }).join('') +
+           '</tbody></table>';
+    }
+  }
+
+  if (hasP) {
+    h += '<button class="btn-s" style="width:100%" onclick="segScenario(\'' + other + '\')">Switch to ' +
+         escapeHtml(appState.scenarios[other].name) + '</button>' +
+         '<button class="btn-s" style="width:100%" onclick="showComparison()">Open the pre and post comparison</button>' +
+         '<div class="ws" style="font-size:10px">Changes you make now apply to ' + escapeHtml(s ? s.name : '') +
+         ' only. The other condition is kept as it was.</div>';
+  } else {
+    h += '<button class="btn-s" style="width:100%" onclick="createProposed()">Create proposed conditions from existing</button>' +
+         '<div class="ws" style="font-size:10px">The proposed case starts as a copy, so only the changes have to be drawn.</div>';
+  }
+  h += '<div class="f2"><button class="btn-p" onclick="exportPDF()">PDF report</button>' +
+       '<button class="btn-s" onclick="exportTXT()">Text report</button></div>' +
+       (hasP ? '<div class="ws" style="font-size:10px">Report covers: <a class="mref" onclick="openReportScope(null)">' +
+               scopeLabel(appState.reportScope) + '</a></div>' : '') +
+       '<div class="wdiv"></div>' +
+       '<div class="f2"><button class="btn-s" onclick="showV(\'v-proj\');selLi(\'li-pinfo\')">Edit project info</button>' +
+       '<button class="btn-s" onclick="openProject()">Open another project</button></div>';
+  el.innerHTML = h;
+}
+
 function updateScenarioUI() {
   var sel = document.getElementById('scenario-sel');
   if (sel) {
@@ -8184,8 +8503,16 @@ function updateScenarioUI() {
              '>' + s.name + '</option>';
     }).join('');
   }
-  var btn = document.getElementById('scenario-make');
-  if (btn) btn.style.display = appState.scenarios.proposed ? 'none' : '';
+  var segE = document.getElementById('seg-existing'), segP = document.getElementById('seg-proposed');
+  if (segE && segP) {
+    segE.classList.toggle('on', appState.activeScenario === 'existing');
+    segP.classList.toggle('on', appState.activeScenario === 'proposed');
+    segP.textContent = appState.scenarios.proposed ? 'Proposed' : '+ Proposed';
+    segP.title = appState.scenarios.proposed ? 'Edit proposed conditions'
+                                             : 'Create proposed conditions as a copy of existing';
+  }
+  var pv = document.getElementById('v-scenario');
+  if (pv && pv.style.display !== 'none') renderScenarioPanel();
   var cmp = document.getElementById('drtab-compare');
   if (cmp) cmp.style.display = (appState.scenarios.existing && appState.scenarios.proposed) ? '' : 'none';
   var lbl = document.getElementById('scenario-note');
